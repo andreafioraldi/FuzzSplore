@@ -1,17 +1,67 @@
-\documentclass[]{article}
+\documentclass[conference,compsoc]{IEEEtran}
 
-%opening
-\title{FuzzSplore: Visualizing Feedback-Driven\\Fuzzing Techniques}
-\author{Andrea Fioraldi and Luigi Paolo Pileggi}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+    
+\usepackage{epigraph}
+\usepackage{listings}
+\usepackage{adjustbox}
+\usepackage{multirow}
+\usepackage{array}
 
+\usepackage[hyphens]{url}
+
+\newcommand{\myparagraph}[1]{\smallskip\noindent{\bf #1.}}
+\newcommand{\myfirstparagraph}[1]{\noindent{\bf #1.}}
+\newcommand{\scedit}[1]{{\color{black} #1}} % blue
+    
 \begin{document}
+
+\title{FuzzSplore: Visualizing Feedback-Driven Fuzzing Techniques}
+
+\author{\IEEEauthorblockN{Andrea Fioraldi}
+\IEEEauthorblockA{\textit{1692419}}
+\and
+\IEEEauthorblockN{Luigi Paolo Pileggi}
+\IEEEauthorblockA{\textit{0000000}}
+}
 
 \maketitle
 
 \section{Introduction}
 
+Feedback-driven Fuzz Testing is a family of techniques to automatically uncovers bugs in software.
 
+Due to its effectiveness, much more efficient than other software testing techniques like Symbolic Execution, the research in this field is flourishing and several different techniques were developed to improve fuzz testing, both from academy and industry.
 
+The evaluation and the comparison of these techniques, however, is a not well defined matter.
+
+A common proxy is the comparison of the code coverage reached over time by each fuzzer, due to the fact that a fuzzer cannot find a bug if it does not explore at least the vulnerable code segment.
+Another widely used metric is found bugs over time, but a bug can be found just thanks to randomism and makes also the evaluations very prone to overfitting.
+
+The data collected using these metrics are often representable using a simple time-based graph that shows the evolution of the fuzzing algorithm.
+
+This approach is useful for an immediate basic comparison between two or more techniques, an analyst have to just see which technique reaches more coverage in less time, but does not reveal the properties of a fuzzer regards specific types of programs states.
+
+For instance, a technique can be better than another in exploring some types of program states and in the same time reaching less code coverage.
+The technique will not cover the bugs in the unexplored code of course, but it may uncover bugs in the program points that it can better explore.
+An example of such technque is directed fuzzing towards Sanitizers violations by \"Osterlund et al. \cite{parmesan}.
+
+We propose FuzzSplore, a tool that allows an analyst to manually explore the evolution of different fuzzing techniques on the same target program.
+
+The main insight that an user can get using the tool are:
+
+\begin{itemize}
+\item The ability of a fuzzer to generate clusters of inputs that are correlated in terms of covered program points;
+\item The ability of a fuzzer in generating inputs with high variance;
+\item The ability of a fuzzer to reach program points exploring intermediate inputs that are not an improvement in terms of coverage.
+\end{itemize}
 
 \section{Background}
 
@@ -21,7 +71,7 @@
 
 \cite{besensitive}
 
-\bibliographystyle{plain}
-\bibliography{\jobname}
+\bibliographystyle{IEEEtran}
+\bibliography{bibliography}
 
 \end{document}
