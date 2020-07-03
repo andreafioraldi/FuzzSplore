@@ -44,7 +44,7 @@ gigimail@gigi.com\\
 
 \author[1,2]{Andrea Fioraldi}
 \author[1]{Luigi Paolo Pileggi}
-\affil[1]{Sapienza University, Rome, Italy \authorcr {\tt \{fioraldi.1692419, pileggi.0000000\}@studenti.uniroma1.it}\vspace{1.5ex}}
+\affil[1]{Sapienza University, Rome, Italy \authorcr {\tt \{fioraldi.1692419, pileggi.1691249\}@studenti.uniroma1.it}\vspace{1.5ex}}
 \affil[2]{EURECOM, Sophia Antipolis, France \authorcr {\tt fioraldi@eurecom.fr} \vspace{-2ex}} 
 
 \maketitle
@@ -91,7 +91,7 @@ The inputs are mutations of previously saved inputs in the fuzzing loop in Mutat
 Our baseline, {\sc AFL++} \cite{aflplusplus}, a widely used fuzzer in the recent times, is a Mutational Coverage Guided Fuzzer.
 
 \begin{center}
-\includegraphics[scale=0.16]{cgf}
+\includegraphics[scale=0.2]{cgf}
 \end{center}
 
 State of the art Coverage-Guided Fuzzers encode the approximate executed path in a representation that is easy and fast to process.
@@ -111,11 +111,11 @@ Looking for parents in this tree, we can evaluate if the intermediate inputs gen
 
 We propose a time-based visualization of the progress of different techniques based on {\sc AFL++}.
 
-The first view will be a navigable levels tree. The user can select the technique in a scrollbar and view the associated tree.
+The first view will be a {\em navigable levels tree}. The user can select the technique in a scrollbar and view the associated tree.
 
 Each node of the tree can be selected to view if it can be considered an interesting input for another technique. This will help in understanding the insight 3, were a tecnhique rech a program points thanks to an intermediate input that another technqiue cannot see as interesting.
 
-There will be also a scatterplot representing the inputs in terms of covered state.
+There will be also a {\em scatterplot representing the inputs} in terms of covered state.
 We collect the hitcounts vector of each input, reduce the dimensionality using PCA and then apply t-SNE on the vector with reduced dimensions to preserve outliners in these most important dimensions.
 
 The color of each point will be related to the technique that generated the input.
@@ -132,9 +132,9 @@ A technque that is able to generate inputs from other that are almost completely
 
 The tree an the scatterplot are synchronized. When a cluster is selected, the corresponding inputs are highlighted in the tree.
 
-All these points can be hidden using a time bar. Selecting a specific lapse of time, only inputs founds by the fuzzer before that time are considered.
+All these points can be hidden using a {\em time bar}. Selecting a specific lapse of time, only inputs founds by the fuzzer before that time are considered.
 
-The other two views, related to the evolution in time, are the coverage over time graph and the new interesting inputs per seconds graph.
+The other two views, related to the evolution in time, are the {\em coverage over time graph} and the {\em new interesting inputs per seconds graph}.
 
 When a testcase is selected (both in the scatterplot or in the tree) a line appears in these graphs highlighing the time in which the testcase was discovered.
 
@@ -145,6 +145,10 @@ Inputs per seconds is related with the levels tree. If a fuzzer generates too ma
 \begin{center}
 \includegraphics[scale=0.2]{mockup}
 \end{center}
+
+In order to give an idea about dimensionality, we pick pcre2 version 183 (SVN) as example PUT. We compiled it with the AFL++ compiler wrapper and the addition of AddressSanitizer and UndefinedBehaviourSanitizer. After 12 hours of fuzzing, we got 14853 generated inputs in the fuzzer queue.
+
+As said before, the hitcounts vector has 65536 dimensions, so in this simple case we have 973406208 elements.
 
 \bibliographystyle{IEEEtran}
 \bibliography{bibliography}
