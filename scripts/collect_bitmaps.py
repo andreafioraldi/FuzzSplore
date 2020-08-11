@@ -24,6 +24,7 @@ args = opt.parse_args()
 AFL_SHOWMAP = os.path.join(script_dir, "../AFLplusplus/afl-showmap")
 OUT_FILE = "virgin_map.bin"
 
+testcases = {}
 inputs_for_seconds = {}
 coverage_over_time = {}
 timeline = {}
@@ -102,6 +103,7 @@ for f in sorted(iterate_files(queue_dir)):
         coverage_over_time[time // 1000] = coverage_over_time.get(time // 1000, 0)
         coverage_over_time[time // 1000] += new_bits
     bitmaps.append(list(bitmap))
+    testcases[id] = {'time': time, 'interesting': interesting, 'new_bits': new_bits}
 
 X = np.array(bitmaps)
 del bitmaps
@@ -109,14 +111,19 @@ del bitmaps
 #pca = PCA(n_components=2)
 #pca.fit(X)
 
+print("TSNE...")
 X_embedded = TSNE(n_components=2).fit_transform(X)
 
-with open(args.output, 'w') as f:
+print("Saving to %s..." % args.output)
+with open(args.output + '_data.json', 'w') as f:
     json.dump({
+      'testcases': testcases,
       'inputs_for_seconds': inputs_for_seconds,
       'coverage_over_time': coverage_over_time,
       'timeline': timeline,
       'graph': graph,
-      'vectors': X_embedded.tolist(),
     }, f)
 
+np.savetxt(args.output + '_vectors.csv', X_embedded, delimiter=",")
+
+print("Done.")
