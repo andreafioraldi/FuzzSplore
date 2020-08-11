@@ -150,6 +150,22 @@ In order to give an idea about dimensionality, we pick pcre2 version 183 (SVN) a
 
 As said before, the hitcounts vector has 65536 dimensions, so in this simple case we have 973406208 elements.
 
+\section{Usage}
+
+An analyst that wants to compare different Fuzzing techniques on a target program will do the following:
+
+\begin{enumerate}
+\item Run the fuzzers (one for each technique) for the same amount time (more than 12h is recommended);
+\item Use the tool to process the data from the fuzzing campaigns;
+\item Use the visual analytics part of the tool to understand which subset of techniques are effective;
+\item Restart the fuzzing campaign assigning computational power to only the chosen techniques;
+\item The behavior of fuzzers in a long time can saturate, maybe retry from step 2 to reduce again the set of techniques.
+\end{enumerate}
+
+Saturation of fuzzer is a problem that was rarely addressed in academic literature but that affects each type of Feedback-driven Fuzzer \cite{saturation}.
+Fuzzing campaigns can last months, or never ends, like for OSS-Fuzz \cite{serebryany2017oss}, the continuous fuzzing service for OSS software by Google, and a tool that can guide towards the selection of techniques that avoid saturation can help a lot the campaign.
+
+Saturation is only one of the problems that can be addressed with {\sc FuzzSplore}, but it is the problem that makes multiple uses of the tool during the campaign necessary.
 \bibliographystyle{IEEEtran}
 \bibliography{bibliography}
 
