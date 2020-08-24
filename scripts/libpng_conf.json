@@ -1,0 +1,12 @@
+[
+  {
+    "name": "afl",
+    "corpus": "/home/andrea/Desktop/libpng-1.6.37/NORMAL/queue",
+    "cmd": ["/home/andrea/Desktop/libpng-1.6.37/ex_afl", "@@", "a"]
+  },
+  {
+    "name": "laf",
+    "corpus": "/home/andrea/Desktop/libpng-1.6.37/COMPCOV/queue",
+    "cmd": ["/home/andrea/Desktop/libpng-1.6.37/ex_laf", "@@", "a"]
+  }
+]

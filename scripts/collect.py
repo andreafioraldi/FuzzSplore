@@ -89,6 +89,10 @@ timeline = {}
 inputs_for_seconds = {}
 coverage_over_time = {}
 
+vects = open(args.output + '_vectors.csv', 'w')
+vects.write('NAME,ID,X,Y\n')
+
+
 for fuzzer in conf:
     queue_dir = fuzzer["corpus"]
     cmd = fuzzer["cmd"]
@@ -98,9 +102,13 @@ for fuzzer in conf:
     virgin_bits = [0] * (2 ** 16)
     cov_virgin_bits = [0] * (2 ** 16)
 
+    i = 0
+    idx_to_id = {}
     for f in sorted(iterate_files(queue_dir)):
         print(name, f)
         id, src, time = parse_filename(f)
+        idx_to_id[i] = id
+        i += 1
         sec = time // 1000
         run_showmap(f, cmd)
         bitmap, new_bits, interesting = merge_showmap(virgin_bits)
@@ -153,16 +161,19 @@ for fuzzer in conf:
                 testcases[fuzzer2['name']][id]['cross'].append(name)
 
     X = np.array(bitmaps)
-    del bitmaps
 
     #pca = PCA(n_components=2)
     #pca.fit(X)
 
     print("TSNE...")
     X_embedded = TSNE(n_components=2).fit_transform(X)
+    #np.savetxt(args.output + '_' + name + '_vectors.csv', X_embedded, delimiter=",", header='X,Y', comments='')
 
-    print("Saving to %s_%s_vectors.csv..." % (args.output, name))
-    np.savetxt(args.output + '_' + name + '_vectors.csv', X_embedded, delimiter=",")
+    for i in range(len(bitmaps)):
+        vects.write('%s,%d,%f,%f\n' % (name, idx_to_id[i], X_embedded[i][0], X_embedded[i][1]))
+
+print("Saving to %s_%s_vectors.csv..." % (args.output, name))
+vects.close()
 
 print("Saving to %s..." % args.output)
 with open(args.output + '_data.json', 'w') as f:
