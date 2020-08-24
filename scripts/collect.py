@@ -130,7 +130,7 @@ for fuzzer in conf:
         if conf[0]['name'] != name:
             print(conf[0]['name'], f)
             run_showmap(f, conf[0]['cmd'])
-            _, cov_new_bits, _ = merge_showmap(cov_virgin_bits)
+            bitmap, cov_new_bits, _ = merge_showmap(cov_virgin_bits)
         if cov_new_bits:
             coverage_over_time[sec] = coverage_over_time.get(sec, {})
             coverage_over_time[sec][name] = coverage_over_time[sec].get(name, 0)

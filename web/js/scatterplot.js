@@ -15,11 +15,13 @@ var svg = d3.select("#scatterplot")
 //Read the data
 d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
 
-  var xmin = d3.min(data, (d) => { return d.X; })
-  var xmax = d3.max(data, (d) => { return d.X; })
+  var ptsize = 2
+
+  var xmin = d3.min(data, (d) => { return +d.X; }) -ptsize
+  var xmax = d3.max(data, (d) => { return +d.X; }) +ptsize
   
-  var ymin = d3.min(data, (d) => { return d.Y; })
-  var ymax = d3.max(data, (d) => { return d.Y; })
+  var ymin = d3.min(data, (d) => { return +d.Y; }) -ptsize
+  var ymax = d3.max(data, (d) => { return +d.Y; }) +ptsize
   
   const colorScale = d3.scaleOrdinal()
         .range(d3.schemeCategory10);
@@ -48,7 +50,7 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
       .attr("cx", function (d) { return x(d.X); } )
       .attr("cy", function (d) { return y(d.Y); } )
       .attr("testcase", function (d) { return d.ID; } )
-      .attr("r", 3)
+      .attr("r", ptsize)
       .attr("class", "non_brushed")
       .style("fill", function (d) { return colorScale(d.NAME); })
 
