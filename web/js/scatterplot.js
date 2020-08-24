@@ -13,11 +13,20 @@ var svg = d3.select("#scatterplot")
           "translate(" + margin.left + "," + margin.top + ")");
 
 //Read the data
-d3.csv("http://localhost:8000/data/vectors.csv", function(data) {
+d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
 
+  var xmin = d3.min(data, (d) => { return d.X; })
+  var xmax = d3.max(data, (d) => { return d.X; })
+  
+  var ymin = d3.min(data, (d) => { return d.Y; })
+  var ymax = d3.max(data, (d) => { return d.Y; })
+  
+  const colorScale = d3.scaleOrdinal()
+        .range(d3.schemeCategory10);
+  
   // Add X axis
   var x = d3.scaleLinear()
-    .domain([-30, 30])
+    .domain([ xmin, xmax ])
     .range([ 0, width ]);
   svg.append("g")
     .attr("transform", "translate(0," + height + ")")
@@ -25,22 +34,67 @@ d3.csv("http://localhost:8000/data/vectors.csv", function(data) {
 
   // Add Y axis
   var y = d3.scaleLinear()
-    .domain([-30, 30])
+    .domain([ ymin, ymax ])
     .range([ height, 0]);
   svg.append("g")
     .call(d3.axisLeft(y));
 
   // Add dots
-  svg.append('g')
+  var circles = svg.append('g')
     .selectAll("dot")
     .data(data)
     .enter()
     .append("circle")
       .attr("cx", function (d) { return x(d.X); } )
       .attr("cy", function (d) { return y(d.Y); } )
-      .attr("r", 1.5)
-      .style("fill", "#69b3a2")
+      .attr("testcase", function (d) { return d.ID; } )
+      .attr("r", 3)
+      .attr("class", "non_brushed")
+      .style("fill", function (d) { return colorScale(d.NAME); })
+
+  function highlightBrushedCircles() {
+
+    if (d3.event.selection != null) {
+
+      // revert circles to initial style
+      circles.attr("class", "non_brushed");
+
+      var brush_coords = d3.brushSelection(this);
+      
+      console.log(circles.filter(function (){
+
+           var cx = d3.select(this).attr("cx"),
+               cy = d3.select(this).attr("cy");
+
+           return isBrushed(brush_coords, cx, cy);
+       }).data())
+
+      // style brushed circles
+      circles.filter(function (){
+
+           var cx = d3.select(this).attr("cx"),
+               cy = d3.select(this).attr("cy");
+
+           return isBrushed(brush_coords, cx, cy);
+       })
+       .attr("class", "brushed");
+
+    }
+  }
   
-  console.log(d3)
+  function isBrushed(brush_coords, cx, cy) {
+
+       var x0 = brush_coords[0][0],
+           x1 = brush_coords[1][0],
+           y0 = brush_coords[0][1],
+           y1 = brush_coords[1][1];
+
+      return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
+  }
+  
+  var brush = d3.brush()
+    .on("brush", highlightBrushedCircles); 
+  svg.append("g")
+     .call(brush);
 
 })

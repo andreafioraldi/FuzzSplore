@@ -1,0 +1,8 @@
+.brushed {
+    stroke: #8e1b54;
+    opacity: 1.0;
+}
+
+.non_brushed {
+    opacity: 0.5;
+}
