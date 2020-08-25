@@ -89,9 +89,11 @@ timeline = {}
 inputs_for_seconds = {}
 coverage_over_time = {}
 
-vects = open(args.output + '_vectors.csv', 'w')
-vects.write('NAME,ID,X,Y\n')
+#vects = open(args.output + '_vectors.csv', 'w')
+#vects.write('NAME,ID,X,Y\n')
 
+all_bitmaps = []
+fuzzers_bitmaps = []
 
 for fuzzer in conf:
     queue_dir = fuzzer["corpus"]
@@ -160,19 +162,39 @@ for fuzzer in conf:
                 testcases[fuzzer2['name']][id]['cross'] = testcases[fuzzer2['name']][id].get('cross', [])
                 testcases[fuzzer2['name']][id]['cross'].append(name)
 
-    X = np.array(bitmaps)
+    plen = len(all_bitmaps)
+    all_bitmaps += bitmaps
+    fuzzers_bitmaps.append((name, plen, len(all_bitmaps)))
+
+    #X = np.array(bitmaps)
 
     #pca = PCA(n_components=2)
     #pca.fit(X)
 
-    print("TSNE...")
-    X_embedded = TSNE(n_components=2).fit_transform(X)
+    #print("TSNE...")
+    #X_embedded = tsne.fit_transform(X)
     #np.savetxt(args.output + '_' + name + '_vectors.csv', X_embedded, delimiter=",", header='X,Y', comments='')
 
-    for i in range(len(bitmaps)):
-        vects.write('%s,%d,%f,%f\n' % (name, idx_to_id[i], X_embedded[i][0], X_embedded[i][1]))
+    #for i in range(len(bitmaps)):
+    #    vects.write('%s,%d,%f,%f\n' % (name, idx_to_id[i], X_embedded[i][0], X_embedded[i][1]))
+
+#print("Saving to %s_vectors.csv..." % args.output)
+#vects.close()
+
+X = np.array(all_bitmaps)
+X_len = len(all_bitmaps)
+del all_bitmaps
+print("TSNE...")
+X_embedded = TSNE(n_components=2).fit_transform(X)
 
 print("Saving to %s_vectors.csv..." % args.output)
+vects = open(args.output + '_vectors.csv', 'w')
+vects.write('NAME,ID,X,Y\n')
+for i in range(X_len):
+    for name, start, end in fuzzers_bitmaps:
+        if i in range(start, end):
+            vects.write('%s,%d,%f,%f\n' % (name, idx_to_id[i - start], X_embedded[i][0], X_embedded[i][1]))
+            break
 vects.close()
 
 print("Saving to %s_coverage.csv..." % args.output)
@@ -185,6 +207,14 @@ for sec in sorted(coverage_over_time.keys()):
         prev_cov[name] += coverage_over_time[sec][name]
         covf.write('%s,%d,%d\n' % (name, sec, prev_cov[name]))
 covf.close()
+
+print("Saving to %s_inputs.csv..." % args.output)
+inpf = open(args.output + '_inputs.csv', 'w')
+inpf.write('NAME,TIME,VAL\n')
+for sec in sorted(inputs_for_seconds.keys()):
+    for name in inputs_for_seconds[sec]:
+        inpf.write('%s,%d,%d\n' % (name, sec, inputs_for_seconds[sec][name]))
+inpf.close()
 
 print("Saving to %s_timeline.csv..." % args.output)
 timef = open(args.output + '_timeline.csv', 'w')

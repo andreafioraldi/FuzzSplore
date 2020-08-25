@@ -16,36 +16,61 @@ html, body {
   height: 100%;
   min-height: 100%;
   float: left;
-  border: 2px solid red;
+  /*border: 2px solid red;*/
 }
 
 .two {
   margin-left: 50%;
   height: 100%;
   min-height:100%;
+  /*border: 2px solid green;*/
 }
 
 #scatterplot {
   float: left;
   width: 100%;
-  min-height: calc(50% - 10px);
-  height: calc(50% - 10px);
-  border: 2px solid gray;
+  min-height: calc(60% - 0px);
+  height: calc(60% - 0px);
+  /*border: 2px solid gray;*/
 }
 
 #coverage {
   float: left;
   width: 100%;
-  min-height:25%;
-  border: 2px solid gray;
+  min-height: calc(20% - 0px);
+  height: calc(20% - 0px);
+  /*border: 2px solid gray;*/
 }
 
 #inputs {
   float: left;
   width: 100%;
-  min-height:25%;
-  border: 2px solid gray;
+  min-height: calc(20% - 0px);
+  height: calc(20% - 0px);
+  /*border: 2px solid gray;*/
 }
+
+#tree {
+  width: 100%;
+  min-height: calc(100% - 150px);
+  height: calc(100% - 150px);
+  background: gray;
+}
+
+#timeline {
+  width: calc(100% - 20px);
+  min-height: calc(150px - 20px);
+  height: calc(150px - 20px);
+  margin: 10px;
+}
+
+
+
+
+
+
+
+
 
 
 .brushed {
@@ -110,4 +135,66 @@ html, body {
   fill: none;
   stroke: #ccc;
   stroke-width: 2px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.slider {
+    position: absolute;
+    border: 1px solid #AAB;
+    background: #BCE;
+    height: 100%;
+    width: 58px;
+    top: 0px;
+    cursor: move;
+    /*margin:-0.5px;*/
+}
+
+.slider .handle {
+    position: absolute;
+    height: 9px;
+    width: 9px;
+    border: 1px solid #AAB;
+    background: #9AC;
+
+    /* Support for bootstrap */
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+.slider .EE {
+    right: -4px;
+    cursor: e-resize;
+}
+
+.slider .WW {
+    cursor: w-resize;
+    left: -4px;
+}
+
+.slider .EE, .slider .WW {
+    top: 50%;
+    margin-top: -4px;
+}
+
+.play-container .button{
+    fill-opacity: 0.0;
+    stroke: #AAB;
+    stroke-width: 1.6;
+}
+
+.play-container .play, .play-container .stop {
+    fill: #BCE;
+    stroke: #AAB;
+    stroke-width: 1;
 }

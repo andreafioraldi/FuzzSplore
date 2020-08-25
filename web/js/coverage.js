@@ -21,7 +21,7 @@ d3.csv("http://0.0.0.0:8888/data/coverage.csv", function(data) {
       width = rect.width - margin.left - margin.right,
       height = rect.height - margin.top - margin.bottom;
   
-  var svg = d3.select("#scatterplot")
+  var svg = d3.select("#coverage")
     .append("svg")
       .attr("width", rect.width)
       .attr("height", rect.height)
