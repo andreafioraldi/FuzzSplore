@@ -104,7 +104,6 @@ for fuzzer in conf:
 
     i = 0
     idx_to_id = {}
-    prev_cov = 0
     for f in sorted(iterate_files(queue_dir)):
         print(name, f)
         id, src, time = parse_filename(f)
@@ -134,9 +133,8 @@ for fuzzer in conf:
             bitmap, cov_new_bits, _ = merge_showmap(cov_virgin_bits)
         if cov_new_bits:
             coverage_over_time[sec] = coverage_over_time.get(sec, {})
-            coverage_over_time[sec][name] = coverage_over_time[sec].get(name, prev_cov)
-            coverage_over_time[sec][name] += new_bits
-            prev_cov += new_bits
+            coverage_over_time[sec][name] = coverage_over_time[sec].get(name, 0)
+            coverage_over_time[sec][name] += cov_new_bits
         bitmaps.append(list(bitmap))
         testcases[name] = testcases.get(name, {})
         testcases[name][id] = testcases[name].get(id, {})
@@ -178,11 +176,14 @@ print("Saving to %s_vectors.csv..." % args.output)
 vects.close()
 
 print("Saving to %s_coverage.csv..." % args.output)
+prev_cov = {}
 covf = open(args.output + '_coverage.csv', 'w')
 covf.write('NAME,TIME,VAL\n')
-for sec in coverage_over_time:
+for sec in sorted(coverage_over_time.keys()):
     for name in coverage_over_time[sec]:
-        covf.write('%s,%d,%d\n' % (name, sec, coverage_over_time[sec][name]))
+        prev_cov[name] = prev_cov.get(name, 0)
+        prev_cov[name] += coverage_over_time[sec][name]
+        covf.write('%s,%d,%d\n' % (name, sec, prev_cov[name]))
 covf.close()
 
 print("Saving to %s_timeline.csv..." % args.output)
@@ -190,7 +191,7 @@ timef = open(args.output + '_timeline.csv', 'w')
 timef.write('NAME,TIME,IDS\n')
 for name in timeline:
     for sec in timeline[name]:
-        timef.write('%s,%d,%d\n' % (name, sec, ':'.join(map(str, timeline[name][sec]))))
+        timef.write('%s,%d,%s\n' % (name, sec, ':'.join(map(str, timeline[name][sec]))))
 timef.close()
 
 
