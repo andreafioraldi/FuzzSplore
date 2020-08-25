@@ -1,3 +1,53 @@
+html, body {
+	min-height:100%;/* needed to base 100% height on something known*/
+	height:100%;
+	text-align:center;
+}
+
+.container {
+  width: 100%;
+  height: calc(100% - 20px);
+  min-height: calc(100% - 20px);
+  margin: auto;
+}
+
+.one {
+  width: 50%;
+  height: 100%;
+  min-height: 100%;
+  float: left;
+  border: 2px solid red;
+}
+
+.two {
+  margin-left: 50%;
+  height: 100%;
+  min-height:100%;
+}
+
+#scatterplot {
+  float: left;
+  width: 100%;
+  min-height: calc(50% - 10px);
+  height: calc(50% - 10px);
+  border: 2px solid gray;
+}
+
+#coverage {
+  float: left;
+  width: 100%;
+  min-height:25%;
+  border: 2px solid gray;
+}
+
+#inputs {
+  float: left;
+  width: 100%;
+  min-height:25%;
+  border: 2px solid gray;
+}
+
+
 .brushed {
     stroke: #8e1b54;
     opacity: 1.0;

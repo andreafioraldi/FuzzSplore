@@ -2,7 +2,7 @@
 d3.csv("http://0.0.0.0:8888/data/inputs.csv", function(data) {
 
   // set the dimensions and margins of the graph
-  var margin = {top: 10, right: 30, bottom: 30, left: 60},
+  /*var margin = {top: 10, right: 30, bottom: 30, left: 60},
       width = 460 - margin.left - margin.right,
       height = 400 - margin.top - margin.bottom;
 
@@ -14,8 +14,25 @@ d3.csv("http://0.0.0.0:8888/data/inputs.csv", function(data) {
     .append("g")
       .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
+  */
 
+  var rect = d3.select("#inputs").node().getBoundingClientRect(); 
+  
+  var margin = {top: 10, right: 20, bottom: 30, left: 40},
+      width = rect.width - margin.left - margin.right,
+      height = rect.height - margin.top - margin.bottom;
+  
+  var svg = d3.select("#scatterplot")
+    .append("svg")
+      .attr("width", rect.width)
+      .attr("height", rect.height)
+    .append("g")
+      .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+  
   var ptsize = 1.5
+  
+  data = data.filter((d) => { return +d.TIME > 100 })
 
   var xmin = d3.min(data, (d) => { return +d.TIME; }) -ptsize
   var xmax = d3.max(data, (d) => { return +d.TIME; }) +ptsize
@@ -33,7 +50,7 @@ d3.csv("http://0.0.0.0:8888/data/inputs.csv", function(data) {
 
   // Add X axis
   var x = d3.scaleLinear()
-    .domain([xmin, xmax])
+    .domain([xmin / 60, xmax / 60])
     .range([ 0, width ]);
   svg.append("g")
     .attr("transform", "translate(0," + height + ")")
@@ -57,7 +74,7 @@ d3.csv("http://0.0.0.0:8888/data/inputs.csv", function(data) {
         .attr("stroke-width", 1.5)
         .attr("d", function(d){
           return d3.line()
-            .x(function(d) { return x(+d.TIME); })
+            .x(function(d) { return x(+d.TIME / 60); })
             .y(function(d) { return y(+d.VAL); })
             (d.values)
         })
