@@ -76,14 +76,25 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
       circles.attr("class", "non_brushed");
 
       var brush_coords = d3.brushSelection(this);
+
+      d3.selectAll(".sel_line").remove();
       
-      console.log(circles.filter(function (){
+      circles.filter(function (){
 
            var cx = d3.select(this).attr("cx"),
                cy = d3.select(this).attr("cy");
 
            return isBrushed(brush_coords, cx, cy);
-       }).data())
+
+       }).data().forEach(function (elem) {
+        
+        var t = id_to_time(elem.NAME, elem.ID)
+        if (t !== undefined) {
+          inputs_addline(elem.NAME, t);
+          coverage_addline(elem.NAME, t);
+        }
+        
+       })
 
       // style brushed circles
       circles.filter(function (){

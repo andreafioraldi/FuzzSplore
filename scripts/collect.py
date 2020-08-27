@@ -114,20 +114,20 @@ for fuzzer in conf:
         sec = time // 1000
         run_showmap(f, cmd)
         bitmap, new_bits, interesting = merge_showmap(virgin_bits)
-        if interesting:
-            graph[name] = graph.get(name, {})
-            graph[name][id] = graph[name].get(id, [])
-            timeline[name] = timeline.get(name, {})
-            timeline[name][sec] = timeline.get(sec, [])
-            timeline[name][sec] += [id]
-            inputs_for_seconds[sec] = inputs_for_seconds.get(sec, {})
-            inputs_for_seconds[sec][name] = inputs_for_seconds[sec].get(name, 0)
-            inputs_for_seconds[sec][name] += 1
-            if src is not None:
-                for sec in src:
-                    graph[name] = graph.get(name, {})
-                    graph[name][sec] = graph[name].get(sec, [])
-                    graph[name][sec] += [id]
+        #if interesting:
+        graph[name] = graph.get(name, {})
+        graph[name][id] = graph[name].get(id, [])
+        timeline[name] = timeline.get(name, {})
+        timeline[name][sec] = timeline[name].get(sec, [])
+        timeline[name][sec] += [id]
+        inputs_for_seconds[sec] = inputs_for_seconds.get(sec, {})
+        inputs_for_seconds[sec][name] = inputs_for_seconds[sec].get(name, 0)
+        inputs_for_seconds[sec][name] += 1
+        if src is not None:
+            for sec in src:
+                graph[name] = graph.get(name, {})
+                graph[name][sec] = graph[name].get(sec, [])
+                graph[name][sec] += [id]
         cov_new_bits = new_bits
         if conf[0]['name'] != name:
             print(conf[0]['name'], f)

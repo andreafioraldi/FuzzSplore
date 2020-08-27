@@ -1,4 +1,6 @@
 
+var coverage_addline = function(fuzzer, time) {}
+
 d3.csv("http://0.0.0.0:8888/data/coverage.csv", function(data) {
 
   // set the dimensions and margins of the graph
@@ -76,5 +78,18 @@ d3.csv("http://0.0.0.0:8888/data/coverage.csv", function(data) {
             .y(function(d) { return y(+d.VAL); })
             (d.values)
         })
+
+  coverage_addline = function (fuzzer, time) {
+    
+    svg.append("svg:line")
+      .attr("class", "sel_line")
+      .attr("x1", x(+time))
+      .attr("y1", height)
+      .attr("x2", x(+time))
+      .attr("y2", 0)
+      .attr("stroke-width", 1)
+      .attr("stroke", colorScale(fuzzer));
+    
+  }
 
 })

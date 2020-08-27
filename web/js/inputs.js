@@ -1,4 +1,6 @@
 
+var inputs_addline = function(fuzzer, time) {}
+
 d3.csv("http://0.0.0.0:8888/data/inputs.csv", function(data) {
 
   // set the dimensions and margins of the graph
@@ -32,14 +34,14 @@ d3.csv("http://0.0.0.0:8888/data/inputs.csv", function(data) {
   
   var ptsize = 1.5
   
-  data = data.filter((d) => { return +d.TIME > 100 })
-
   var xmin = d3.min(data, (d) => { return +d.TIME; }) -ptsize
   var xmax = d3.max(data, (d) => { return +d.TIME; }) +ptsize
   
-  var ymin = d3.min(data, (d) => { return +d.VAL; }) -ptsize
-  var ymax = d3.max(data, (d) => { return +d.VAL; }) +ptsize
-
+  data2 = data.filter((d) => { return +d.TIME > 100 })
+  
+  var ymin = d3.min(data2, (d) => { return +d.VAL; }) -ptsize
+  var ymax = d3.max(data2, (d) => { return +d.VAL; }) +ptsize
+  
   // group the data: I want to draw one line per group
   var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
     .key(function(d) { return d.NAME;})
@@ -50,7 +52,7 @@ d3.csv("http://0.0.0.0:8888/data/inputs.csv", function(data) {
 
   // Add X axis
   var x = d3.scaleLinear()
-    .domain([xmin / 60, xmax / 60])
+    .domain([xmin, xmax])
     .range([ 0, width ]);
   svg.append("g")
     .attr("transform", "translate(0," + height + ")")
@@ -74,9 +76,33 @@ d3.csv("http://0.0.0.0:8888/data/inputs.csv", function(data) {
         .attr("stroke-width", 1.5)
         .attr("d", function(d){
           return d3.line()
-            .x(function(d) { return x(+d.TIME / 60); })
+            .x(function(d) { return x(+d.TIME); })
             .y(function(d) { return y(+d.VAL); })
             (d.values)
         })
+
+  /*
+  svg.append("svg:line")
+    .attr("class", "sel_line")
+    .attr("x1", x(theDate))
+    .attr("y1", height)
+    .attr("x2", x(theDate))
+    .attr("y2", 0)
+    
+    d3.select(".sel_line").remove();
+  */
+
+  inputs_addline = function (fuzzer, time) {
+    
+    svg.append("svg:line")
+      .attr("class", "sel_line")
+      .attr("x1", x(+time))
+      .attr("y1", height)
+      .attr("x2", x(+time))
+      .attr("y2", 0)
+      .attr("stroke-width", 1)
+      .attr("stroke", colorScale(fuzzer));
+    
+  }
 
 })
