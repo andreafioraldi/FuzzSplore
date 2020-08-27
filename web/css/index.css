@@ -54,7 +54,6 @@ html, body {
   width: 100%;
   min-height: calc(100% - 150px);
   height: calc(100% - 150px);
-  background: gray;
 }
 
 #timeline {
