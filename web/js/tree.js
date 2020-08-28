@@ -71,13 +71,13 @@ function update(source) {
 
   // Update the nodes...
   var node = svg.selectAll('g.node')
-      .data(nodes, function(d) {return d.id || (d.id = ++i); });
+      .data(nodes, function(d) {return d.id || (d.id = ++i); })
 
-  // Enter any new modes at the parent's previous position.
+  // Enter any new nodes at the parent's previous position.
   var nodeEnter = node.enter().append('g')
       .attr('class', 'node')
       .attr("transform", function(d) {
-        return "translate(" + source.y0 + "," + source.x0 + ")";
+        return "translate(" + source.x0 + "," + source.y0 + ")";
     })
     .on('click', click);
 
@@ -107,7 +107,7 @@ function update(source) {
   nodeUpdate.transition()
     .duration(duration)
     .attr("transform", function(d) { 
-        return "translate(" + d.y + "," + d.x + ")";
+        return "translate(" + d.x + "," + d.y + ")";
      });
 
   // Update the node attributes and style
@@ -123,7 +123,7 @@ function update(source) {
   var nodeExit = node.exit().transition()
       .duration(duration)
       .attr("transform", function(d) {
-          return "translate(" + source.y + "," + source.x + ")";
+          return "translate(" + source.x + "," + source.y + ")";
       })
       .remove();
 
@@ -148,6 +148,12 @@ function update(source) {
         var o = {x: source.x0, y: source.y0}
         return diagonal(o, o)
       });
+      //.attr("d", function(d) {
+      // return "M" + d.x + "," + d.y
+      //   + "C" + d.x + "," + (d.y + d.parent.y) / 2
+      //   + " " + d.parent.x + "," +  (d.y + d.parent.y) / 2
+      //   + " " + d.parent.x + "," + d.parent.y;
+      // });
 
   // UPDATE
   var linkUpdate = linkEnter.merge(link);
@@ -175,10 +181,10 @@ function update(source) {
   // Creates a curved (diagonal) path from parent to the child nodes
   function diagonal(s, d) {
 
-    path = `M ${s.y} ${s.x}
-            C ${(s.y + d.y) / 2} ${s.x},
-              ${(s.y + d.y) / 2} ${d.x},
-              ${d.y} ${d.x}`
+    path = `M ${s.x} ${s.y}
+            C ${s.x}, ${(s.y + d.y) / 2}
+              ${d.x}, ${(s.y + d.y) / 2}
+              ${d.x} ${d.y}`
 
     return path
   }
