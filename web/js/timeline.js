@@ -28,18 +28,19 @@ d3.csv("http://0.0.0.0:8888/data/timeline.csv", function(data) {
       height = rect.height - margin.top - margin.bottom;
 
   // TimeLine
-  var formatDateIntoYear = d3.timeFormat("%Y");
-  var formatDate = d3.timeFormat("%b %Y");
-  var parseDate = d3.timeParse("%m/%d/%y");
+  //var formatDateIntoYear = d3.timeFormat("%Y");
+  //var formatDate = d3.timeFormat("%b %Y");
+  //var parseDate = d3.timeParse("%m/%d/%y");
+  var lastElem = data.slice(0).sort( (a, b) => (parseInt(a.TIME) < parseInt(b.TIME))? 1 : ((parseInt(a.TIME) > parseInt(b.TIME))? -1 : 0))[0];
 
-  var startDate = new Date("2004-11-01"),
-      endDate = new Date("2017-04-01");
+  var startDate = 0,
+      endDate = parseInt(lastElem.TIME);
 
   var moving = false;
   var currentValue = 0;
   var targetValue = width;
 
-  var x = d3.scaleTime()
+  var x = d3.scaleLinear()
       .domain([startDate, endDate])
       .range([0, targetValue])
       .clamp(true);
@@ -79,7 +80,7 @@ d3.csv("http://0.0.0.0:8888/data/timeline.csv", function(data) {
       .attr("x", x)
       .attr("y", 10)
       .attr("text-anchor", "middle")
-      .text(function(d) { return formatDateIntoYear(d); });
+      .text(function(d) { /*return formatDateIntoYear(d)*/ `${d}`; });
 
   var handle = slider.insert("circle", ".track-overlay")
       .attr("class", "handle")
@@ -88,7 +89,7 @@ d3.csv("http://0.0.0.0:8888/data/timeline.csv", function(data) {
   var label = slider.append("text")  
       .attr("class", "label")
       .attr("text-anchor", "middle")
-      .text(formatDate(startDate))
+      .text(/*formatDate(startDate)*/`${startDate}`)
       .attr("transform", "translate(0," + (-25) + ")")
 
   function update(h) {
@@ -96,7 +97,7 @@ d3.csv("http://0.0.0.0:8888/data/timeline.csv", function(data) {
     handle.attr("cx", x(h));
     label
       .attr("x", x(h))
-      .text(formatDate(h));
+      .text(/*formatDate(h)*/ `${Math.round(h)}`);
 
     // filter data set and redraw plot
     //var newData = dataset.filter(function(d) {
