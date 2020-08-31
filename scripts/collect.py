@@ -94,6 +94,8 @@ coverage_over_time = {}
 
 all_bitmaps = []
 fuzzers_bitmaps = []
+idx_to_id = {}
+idx_to_time = {}
 
 for fuzzer in conf:
     queue_dir = fuzzer["corpus"]
@@ -105,13 +107,15 @@ for fuzzer in conf:
     cov_virgin_bits = [0] * (2 ** 16)
 
     i = 0
-    idx_to_id = {}
+    idx_to_id[name] = {}
+    idx_to_time[name] = {}
     for f in sorted(iterate_files(queue_dir)):
         print(name, f)
         id, src, time = parse_filename(f)
-        idx_to_id[i] = id
-        i += 1
         sec = time // 1000
+        idx_to_id[name][i] = id
+        idx_to_time[name][i] = sec
+        i += 1
         run_showmap(f, cmd)
         bitmap, new_bits, interesting = merge_showmap(virgin_bits)
         #if interesting:
@@ -176,7 +180,7 @@ for fuzzer in conf:
     #np.savetxt(args.output + '_' + name + '_vectors.csv', X_embedded, delimiter=",", header='X,Y', comments='')
 
     #for i in range(len(bitmaps)):
-    #    vects.write('%s,%d,%f,%f\n' % (name, idx_to_id[i], X_embedded[i][0], X_embedded[i][1]))
+    #    vects.write('%s,%d,%f,%f\n' % (name, idx_to_id[name][i], X_embedded[i][0], X_embedded[i][1]))
 
 #print("Saving to %s_vectors.csv..." % args.output)
 #vects.close()
@@ -189,11 +193,11 @@ X_embedded = TSNE(n_components=2).fit_transform(X)
 
 print("Saving to %s_vectors.csv..." % args.output)
 vects = open(args.output + '_vectors.csv', 'w')
-vects.write('NAME,ID,X,Y\n')
+vects.write('NAME,ID,TIME,X,Y\n')
 for i in range(X_len):
     for name, start, end in fuzzers_bitmaps:
         if i in range(start, end):
-            vects.write('%s,%d,%f,%f\n' % (name, idx_to_id[i - start], X_embedded[i][0], X_embedded[i][1]))
+            vects.write('%s,%d,%d,%f,%f\n' % (name, idx_to_id[name][i - start], idx_to_time[name][i - start], X_embedded[i][0], X_embedded[i][1]))
             break
 vects.close()
 

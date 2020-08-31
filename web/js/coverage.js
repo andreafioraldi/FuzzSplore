@@ -1,5 +1,6 @@
 
 var coverage_addline = function(fuzzer, time) {}
+var filter_coverage = function (time) {}
 
 d3.csv("http://0.0.0.0:8888/data/coverage.csv", function(data) {
 
@@ -52,7 +53,7 @@ d3.csv("http://0.0.0.0:8888/data/coverage.csv", function(data) {
   var x = d3.scaleLinear()
     .domain([xmin, xmax])
     .range([ 0, width ]);
-  svg.append("g")
+  var xAxis = svg.append("g")
     .attr("transform", "translate(0," + height + ")")
     .call(d3.axisBottom(x));
 
@@ -70,6 +71,7 @@ d3.csv("http://0.0.0.0:8888/data/coverage.csv", function(data) {
       .enter()
       .append("path")
         .attr("fill", "none")
+        .attr("class", "covline")
         .attr("stroke", function(d){ return colorScale(d.key) })
         .attr("stroke-width", 1.5)
         .attr("d", function(d){
@@ -78,6 +80,43 @@ d3.csv("http://0.0.0.0:8888/data/coverage.csv", function(data) {
             .y(function(d) { return y(+d.VAL); })
             (d.values)
         })
+
+  filter_coverage = function (time) {
+  
+    // TODO simply hide
+  
+    var sumstat2 = []
+    for (k in sumstat) {
+      sumstat2.push( {
+        key: sumstat[k].key,
+        values: sumstat[k].values.filter((d) => { return +d.TIME < time })
+      } )
+    }
+    console.log(sumstat2)
+    
+    if (time < xmax) {
+      x.domain([xmin, time])
+      xAxis.transition().duration(1000).call(d3.axisBottom(x))
+    }
+    
+    d3.selectAll(".covline").remove()
+    
+    svg.selectAll(".line")
+        .data(sumstat2)
+        .enter()
+        .append("path")
+          .attr("fill", "none")
+          .attr("class", "covline")
+          .attr("stroke", function(d){ return colorScale(d.key) })
+          .attr("stroke-width", 1.5)
+          .attr("d", function(d){
+            return d3.line()
+              .x(function(d) { return x(+d.TIME); })
+              .y(function(d) { return y(+d.VAL); })
+              (d.values)
+          })
+    
+  }
 
   coverage_addline = function (fuzzer, time) {
     

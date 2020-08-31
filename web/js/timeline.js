@@ -68,6 +68,10 @@ d3.csv("http://0.0.0.0:8888/data/timeline.csv", function(data) {
             currentValue = d3.event.x;
             update(x.invert(currentValue)); 
           })
+          .on("end", function() {
+            currentValue = d3.event.x;
+            updateOthers(x.invert(currentValue)); 
+          })
       );
 
   slider.insert("g", ".track-overlay")
@@ -105,6 +109,14 @@ d3.csv("http://0.0.0.0:8888/data/timeline.csv", function(data) {
     //})
     //drawPlot(newData);
 
+  }
+  
+  function updateOthers(h) {
+  
+    filter_scatterplot(h)
+    filter_coverage(h)
+    filter_inputs(h)
+  
   }
 
 })

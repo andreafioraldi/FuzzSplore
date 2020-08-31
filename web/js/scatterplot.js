@@ -1,3 +1,5 @@
+var filter_scatterplot = function (time) {}
+
 //Read the data
 d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
 
@@ -67,6 +69,31 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
       .attr("r", ptsize)
       .attr("class", "non_brushed")
       .style("fill", function (d) { return colorScale(d.NAME); })
+
+  filter_scatterplot = function (time) {
+  
+    // TODO simply hide
+  
+    circles.attr("class", "non_brushed");
+    d3.selectAll(".sel_line").remove();
+  
+    d3.selectAll(".non_brushed").remove()
+    
+    var data2 = data.filter((d) => { console.log(+d.TIME); return +d.TIME < time })
+    
+    circles = svg.append('g')
+      .selectAll("dot")
+      .data(data2)
+      .enter()
+      .append("circle")
+        .attr("cx", function (d) { return x(d.X); } )
+        .attr("cy", function (d) { return y(d.Y); } )
+        .attr("testcase", function (d) { return d.ID; } )
+        .attr("r", ptsize)
+        .attr("class", "non_brushed")
+        .style("fill", function (d) { return colorScale(d.NAME); })
+    
+  }
 
   function highlightBrushedCircles() {
 
