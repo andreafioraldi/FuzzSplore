@@ -128,10 +128,10 @@ for fuzzer in conf:
         inputs_for_seconds[sec][name] = inputs_for_seconds[sec].get(name, 0)
         inputs_for_seconds[sec][name] += 1
         if src is not None:
-            for sec in src:
+            for srcid in src:
                 graph[name] = graph.get(name, {})
-                graph[name][sec] = graph[name].get(sec, [])
-                graph[name][sec] += [id]
+                graph[name][srcid] = graph[name].get(srcid, [])
+                graph[name][srcid] += [id]
         cov_new_bits = new_bits
         if conf[0]['name'] != name:
             print(conf[0]['name'], f)
@@ -144,7 +144,7 @@ for fuzzer in conf:
         bitmaps.append(list(bitmap))
         testcases[name] = testcases.get(name, {})
         testcases[name][id] = testcases[name].get(id, {})
-        testcases[name][id]['time'] = time
+        testcases[name][id]['time'] = sec
         testcases[name][id]['interesting'] = interesting
         testcases[name][id]['new_bits'] = new_bits
         testcases[name][id]['cross'] = testcases[name][id].get('cross', [])
@@ -228,7 +228,22 @@ for name in timeline:
         timef.write('%s,%d,%s\n' % (name, sec, ':'.join(map(str, timeline[name][sec]))))
 timef.close()
 
+def visit(fuzz, id):
+    return {
+      "name": id,
+      "children": [visit(fuzz, child) for child in graph[fuzz][id]],
+      "fuzzer": fuzz,
+      **testcases[fuzz][id]
+    }
+d3graph = {}
+for name in graph:
+    d3graph[name] = visit(name, 0)
 
+print("Saving to %s_graphs..." % args.output)
+with open(args.output + '_graphs.json', 'w') as f:
+    json.dump(d3graph, f)
+
+'''
 print("Saving to %s..." % args.output)
 with open(args.output + '_data.json', 'w') as f:
     json.dump({
@@ -238,5 +253,6 @@ with open(args.output + '_data.json', 'w') as f:
       'timeline': timeline,
       'graph': graph,
     }, f)
+'''
 
 print("Done.")
