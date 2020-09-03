@@ -4,14 +4,124 @@ var margin = {top: 50, right: 90, bottom: 30, left: 90},
     width = rect.width - margin.left - margin.right,
     height = rect.height - margin.top - margin.bottom;
 
+const colorScale = d3.scaleOrdinal()
+        .range(d3.schemeCategory10);
+
 d3.json('http://0.0.0.0:8888/data/graphs.json', data => {
-    console.log(data)
-    networkChart = renderChartCollapsibleNetwork('laf')
+  
+  var divs = {}
+  
+  for (var fuzzer in data) {
+    
+    var new_div = document.createElement("div");
+    new_div.style.visibility = 'hidden'
+    new_div.setAttribute("class", "graph_div");
+    new_div.setAttribute("id", "graph_div_" + fuzzer);
+    document.getElementById('tree').appendChild(new_div)
+    
+    divs[fuzzer] = new_div
+    
+    networkChart = renderChartCollapsibleNetwork(fuzzer)
       .svgHeight(height)
       .svgWidth(width)
-      .container('#tree')
-      .data({ root: data['laf'] })
+      .container("#graph_div_" + fuzzer)
+      .data({ root: data[fuzzer] })
       .run()
+  
+  }
+  
+  var svg_curtree = d3.select("#graph_select")
+    .append("svg")
+      .attr("width", rect.width)
+      .attr("height", d3.select("#graph_select").node().getBoundingClientRect().height)
+    .append("g")
+
+  var leg_idx = {}
+
+  var current_tree = null;
+  function select_a_tree(fuzzer) {
+
+    var obj = d3.selectAll('.tree_sel').filter(function(d) {return d == fuzzer})
+    d3.selectAll('.tree_sel').attr("font-weight", (k) => 'normal')
+    obj.attr("font-weight", (k) => 'bold')
+
+    for (var f in divs) {
+      divs[f].style.visibility = 'hidden'
+    }
+    if (current_tree !== null) {
+      divs[current_tree].style.visibility = 'hidden'
+    }
+    divs[fuzzer].style.visibility = 'visible'
+    divs[fuzzer].style.top = '0'
+    current_tree = fuzzer;
+  
+  }
+
+  svg_curtree
+    .selectAll("curTreeSelector")
+    .data([' Current tree:'].concat(Object.keys(data)))
+    .enter()
+      .append('g')
+      .append("text")
+        .attr('x', function(d,i){
+          var l = 0
+          for (var j = 0; j < i; ++j)
+            l += leg_idx[j]*15 + 15
+          leg_idx[i] = d.length
+          return 80 + l
+        })
+        .attr('y', 30)
+        .text(function(d) { return d; })
+        .style("fill", function(d){ if (d == ' Current tree:') return 'black'; return colorScale(d); })
+        .style("font-size", 15)
+        .attr('class', 'tree_sel')
+        //.attr("font-weight", function(d,i) { if (d !== ' Current tree:') return 'bold'; else 'normal';})
+      .on("click", function(fuzz){
+        if (fuzz == ' Current tree:') return
+        select_a_tree(fuzz)
+      })
+    
+    select_a_tree(Object.keys(data)[0])
+  
+  var svg_curcross = d3.select("#graph_cross")
+    .append("svg")
+      .attr("width", rect.width)
+      .attr("height", d3.select("#graph_cross").node().getBoundingClientRect().height)
+    .append("g")
+
+  leg_idx = {}
+
+  svg_curcross
+    .selectAll("curTreeCross")
+    .data(['Cross compare:'].concat(Object.keys(data)))
+    .enter()
+      .append('g')
+      .append("text")
+        .attr('x', function(d,i){
+          var l = 0
+          for (var j = 0; j < i; ++j)
+            l += leg_idx[j]*15 + 15
+          leg_idx[i] = d.length
+          return 80 + l
+        })
+        .attr('y', 30)
+        .text(function(d) { return d; })
+        .style("fill", function(d){ if (d == 'Cross compare:') return 'black'; return colorScale(d); })
+        .style("font-size", 15)
+        .attr('class', 'tree_cross')
+        //.attr("font-weight", function(d,i) { if (d !== 'Current tree:') return 'bold'; else 'normal';})
+      .on("click", function(fuzz){
+        if (fuzz == 'Cross compare:') return
+        
+        d3.selectAll('.tree_cross').attr("font-weight", (k) => 'normal')
+        
+        if (current_tree != fuzz) {
+          d3.select(this).attr("font-weight", (k) => 'bold')
+          // ... 
+        }
+        
+      })
+    
   })
 /*  
 
@@ -22,9 +132,6 @@ https://github.com/bumbeishvili/d3-coding-conventions
 */
 
 function renderChartCollapsibleNetwork(fuzzer) {
-
-  const colorScale = d3.scaleOrdinal()
-        .range(d3.schemeCategory10);
 
   // exposed variables
   var attrs = {

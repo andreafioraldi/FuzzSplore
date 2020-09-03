@@ -83,7 +83,7 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
 
   svg_legend
     .selectAll("myLegend")
-    .data(['Legend:'].concat(fuzzers))
+    .data(['Filter:'].concat(fuzzers))
     .enter()
       .append('g')
       .append("text")
@@ -96,13 +96,15 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
         })
         .attr('y', 30)
         .text(function(d) { return d; })
-        .style("fill", function(d){ if (d == 'Legend:') return 'black'; return colorScale(d); })
+        .style("fill", function(d){ if (d == 'Filter:') return 'black'; return colorScale(d); })
         .style("font-size", 15)
-        .attr("font-weight", function(d,i) { if (d !== 'Legend:') return 'bold'; else 'normal';})
+        .attr('class', 'legend_item')
+        .attr("font-weight", function(d,i) { if (d !== 'Filter:') return 'bold'; else 'normal';})
       .on("click", function(fuzz){
-        if (fuzz == 'Legend:') return
+        if (fuzz == 'Filter:') return
         
         var sel = circles.filter(function(d){return d.NAME == fuzz})
+        var curop = sel.style("opacity")
         sel.transition().style("opacity", sel.style("opacity") > 0 ? 0:0.5)
         
         sel = d3.selectAll('.inputline').filter(function(d){return d.key == fuzz})
@@ -114,6 +116,12 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
         sel = d3.selectAll('.sel_line').filter(function(){return d3.select(this).attr('fuzzer') == fuzz})
         if (sel.data().length > 0)
           sel.transition().style("opacity", sel.style("opacity") > 0 ? 0:1)
+          
+        //d3.selectAll('.legend_item').attr("font-weight", (k) => 'normal')
+        if (curop > 0)
+          d3.select(this).attr("font-weight", (k) => 'normal')
+        else
+          d3.select(this).attr("font-weight", (k) => 'bold')
 
       })
 
