@@ -83,7 +83,7 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
 
   svg_legend
     .selectAll("myLegend")
-    .data(['Filter:'].concat(fuzzers))
+    .data(['Graphs filter:'].concat(fuzzers))
     .enter()
       .append('g')
       .append("text")
@@ -96,12 +96,12 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
         })
         .attr('y', 30)
         .text(function(d) { return d; })
-        .style("fill", function(d){ if (d == 'Filter:') return 'black'; return colorScale(d); })
+        .style("fill", function(d){ if (d == 'Graphs filter:') return 'black'; return colorScale(d); })
         .style("font-size", 15)
         .attr('class', 'legend_item')
-        .attr("font-weight", function(d,i) { if (d !== 'Filter:') return 'bold'; else 'normal';})
+        .attr("font-weight", function(d,i) { if (d !== 'Graphs filter:') return 'bold'; else 'normal';})
       .on("click", function(fuzz){
-        if (fuzz == 'Filter:') return
+        if (fuzz == 'Graphs filter:') return
         
         var sel = circles.filter(function(d){return d.NAME == fuzz})
         var curop = sel.style("opacity")
@@ -163,7 +163,7 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
       d3.selectAll(".sel_line").remove();
       
       var tree_nodes = d3.selectAll('.treenode')
-      tree_nodes.style('stroke', 'black') 
+      tree_nodes.style('stroke', 'lightgray') 
       
       var filtered = circles.filter(function (){
 
@@ -195,7 +195,7 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
         if (ptmap[d3.select(this).attr('fuzzer')] === undefined) return false
         return ptmap[d3.select(this).attr('fuzzer')].has(+d.data.name)
       })
-      idnode.style('stroke', 'red')      
+      idnode.style('stroke', 'black')      
      
       // style brushed circles
       filtered.attr("class", "brushed");

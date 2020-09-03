@@ -29,9 +29,12 @@ html, body {
 .graph_div {
   width: 100%;
   height: 100%;
-  min-height:100%;
+  min-height: 100%;
   min-width:100%;
+  position: absolute;
   top: 0;
+  left: 0;
+  margin-top: 10px;
 }
 
 #scatterplot {
@@ -62,10 +65,10 @@ html, body {
   width: 100%;
   min-height: 40px;
   height: 40px;
-  margin-top: 10px;
 }
 
 #graph_select {
+  margin-top: 10px;
   float: left;
   width: 100%;
   min-height: 40px;
@@ -77,14 +80,13 @@ html, body {
   width: 100%;
   min-height: 40px;
   height: 40px;
-  margin-bottom: 10px;
 }
 
-
 #tree {
+  position: relative;
   width: 100%;
-  min-height: calc(100% - 100px - 40px - 10px);
-  height: calc(100% - 100px - 40px - 10px);
+  min-height: calc(100% - 100px - 40px - 40px - 40px - 10px);
+  height: calc(100% - 100px - 40px - 40px - 40px - 10px);
 }
 
 #timeline {

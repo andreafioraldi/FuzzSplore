@@ -141,6 +141,7 @@ d3.csv("http://0.0.0.0:8888/data/timeline.csv", function(data) {
     filter_scatterplot(tmin, tmax)
     filter_coverage(tmin, tmax)
     filter_inputs(tmin, tmax)
+    filter_tree(tmin, tmax)
   
   }
   

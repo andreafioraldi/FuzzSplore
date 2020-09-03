@@ -1,15 +1,19 @@
 var rect = d3.select("#tree").node().getBoundingClientRect(); 
 
-var margin = {top: 50, right: 90, bottom: 30, left: 90},
+var margin = {top: 0, right: 30, bottom: 10, left: 30},
     width = rect.width - margin.left - margin.right,
     height = rect.height - margin.top - margin.bottom;
 
 const colorScale = d3.scaleOrdinal()
         .range(d3.schemeCategory10);
 
+var filter_tree = function (tmin, tmax) {}
+
 d3.json('http://0.0.0.0:8888/data/graphs.json', data => {
   
   var divs = {}
+  var charts = {}
+  var tree_div = document.getElementById('tree')
   
   for (var fuzzer in data) {
     
@@ -17,7 +21,7 @@ d3.json('http://0.0.0.0:8888/data/graphs.json', data => {
     new_div.style.visibility = 'hidden'
     new_div.setAttribute("class", "graph_div");
     new_div.setAttribute("id", "graph_div_" + fuzzer);
-    document.getElementById('tree').appendChild(new_div)
+    tree_div.appendChild(new_div)
     
     divs[fuzzer] = new_div
     
@@ -27,6 +31,47 @@ d3.json('http://0.0.0.0:8888/data/graphs.json', data => {
       .container("#graph_div_" + fuzzer)
       .data({ root: data[fuzzer] })
       .run()
+    
+    charts[fuzzer] = networkChart
+  
+  }
+  
+  filter_tree = function (tmin, tmax) {
+  
+    var tree_nodes = d3.selectAll('.treenode')
+    tree_nodes.style('stroke', 'lightgray') 
+  
+    
+    for (var fuzzer in data) {
+    
+      charts[fuzzer].filterTime(tmin, tmax)
+    
+    }
+  
+    return;
+  
+    function visit(n) {
+      var nn = undefined
+      if (n.time <= tmax) {
+        nn = {children: []}
+        for (var prop in n) {
+          if (prop == 'children') continue
+          nn[prop] = n[prop]
+        }
+        for (var child of n.children) {
+          var c = visit(child)
+          if (c !== undefined)
+            nn.children.push(c)
+        }
+      }
+      return nn
+    }
+    
+    for (var fuzzer in data) {
+    
+      charts[fuzzer].data({ root: visit(data[fuzzer]) })
+    
+    }
   
   }
   
@@ -113,11 +158,19 @@ d3.json('http://0.0.0.0:8888/data/graphs.json', data => {
       .on("click", function(fuzz){
         if (fuzz == 'Cross compare:') return
         
-        d3.selectAll('.tree_cross').attr("font-weight", (k) => 'normal')
+        var already = d3.select(this).attr("font-weight") == 'bold'
         
-        if (current_tree != fuzz) {
+        d3.selectAll('.tree_cross').attr("font-weight", (k) => 'normal')
+        var tree_nodes = d3.selectAll('.treenode')
+        tree_nodes.style('fill', 'white') 
+        
+        if (!already && current_tree != fuzz) {
           d3.select(this).attr("font-weight", (k) => 'bold')
           // ... 
+          
+          tree_nodes.filter(function (d) {
+            return d.data.cross.indexOf(fuzz) >= 0
+          }).style('fill', colorScale(fuzz)) 
         }
         
       })
@@ -138,11 +191,11 @@ function render_network(fuzzer) {
     nodeRadius: 18,
     container: 'body',
     distance: 100,
-    nodeStroke: 'black',
+    nodeStroke: 'lightgray',
     nodeTextColor: 'black',
     linkColor: '#303030',
     activeLinkColor: "blue",
-    hoverOpacity: 0.2,
+    hoverOpacity: 0.5,
     maxTextDisplayZoomLevel: 1,
     textDisplayed: true,
     lineStrokeWidth: 1.5,
@@ -311,6 +364,7 @@ function render_network(fuzzer) {
         links = links.enter()
           .append('line')
           .attr('class', 'link')
+          .attr('hidden', 'false')
           .merge(links)//.style('stroke', '#9ecae1');
         //links.style('stroke', attrs.linkColor).attr('stroke-width', attrs.lineStrokeWidth)
 
@@ -444,12 +498,15 @@ function render_network(fuzzer) {
           .filter(n => linkedNodes.indexOf(n.id) == -1)
           .attr('opacity', attrs.hoverOpacity);
 
-        //reduce all other links opacity
-        linksWrapper.selectAll('.link').attr('opacity', attrs.hoverOpacity);
+        var visibles = linksWrapper.selectAll('.link').filter(function (d) {
+          return d3.select(this).attr('hidden') == 'false'
+        })
 
+        //reduce all other links opacity
+        visibles.attr('opacity', attrs.hoverOpacity);
 
         //highlight hovered nodes connections
-        linksWrapper.selectAll('.link')
+        visibles
           .filter(l => l.source.id == d.id || l.target.id == d.id)
           .attr('opacity', 1)
           //.style('stroke', attrs.activeLinkColor)
@@ -463,7 +520,10 @@ function render_network(fuzzer) {
 
         // return things back to normal
         nodesWrapper.selectAll('.node').attr('opacity', 1);
-        linksWrapper.selectAll('.link').attr('opacity', 1)//.style('stroke', attrs.linkColor)
+        linksWrapper.selectAll('.link').filter(function (d) {
+          return d3.select(this).attr('hidden') == 'false'
+        }).attr('opacity', 1)//.style('stroke', attrs.linkColor)
+      
       }
 
       // --------------- handle node click event ---------------
@@ -475,9 +535,9 @@ function render_network(fuzzer) {
         var idnode = d3.selectAll('.treenode').filter(function (dd) {
           return d3.select(this).attr('fuzzer') == fuzzer && +dd.data.name == +d.data.name
         })
-        if (idnode.style('stroke') == 'red') {
+        if (idnode.style('stroke') == 'black') {
         
-          idnode.style('stroke', 'black')
+          idnode.style('stroke', 'lightgray')
           d3.selectAll('.brushed').filter(function (dd) {
             return (+dd.ID == +d.data.name && dd.NAME == fuzzer)
           }).attr('class', 'non_brushed')
@@ -487,7 +547,7 @@ function render_network(fuzzer) {
           
         } else {
       
-          idnode.style('stroke', 'red')
+          idnode.style('stroke', 'black')
           d3.selectAll('.non_brushed').filter(function (dd) {
             return (+dd.ID == +d.data.name && dd.NAME == fuzzer)
           }).attr('class', 'brushed')
@@ -681,6 +741,35 @@ function render_network(fuzzer) {
       window.charts.push(main);
     }
     return main;
+  }
+
+  main.filterTime = function(tmin, tmax) {
+  
+    d3.selectAll('.treenode').attr('opacity', 1);
+    d3.selectAll('.node-texts').attr('opacity', 1);
+    d3.selectAll('.link').attr('opacity', 1);
+    d3.selectAll('.link').attr('hidden', 'false');
+  
+    var tohide_nodes = d3.selectAll('.treenode').filter(function (d) {
+      return d.data.time < tmin || d.data.time > tmax
+    })
+    
+    tohide_nodes.attr('opacity', 0);
+    
+    var tohide_texts = d3.selectAll('.node-texts').filter(function (d) {
+      var t = id_to_time(fuzzer, d3.select(this).text())
+      return +t < +tmin || +t > +tmax
+    })
+    
+    tohide_texts.attr('opacity', 0);
+    
+    var tohide_links = d3.selectAll('.link').filter(function (l) {
+      return l.source.data.time < tmin || l.source.data.time > tmax || l.target.data.time < tmin || l.target.data.time > tmax
+    })
+    
+    tohide_links.attr('hidden', 'true');
+    tohide_links.attr('opacity', 0);
+  
   }
 
   //exposed update functions
