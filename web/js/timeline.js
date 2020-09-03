@@ -23,7 +23,7 @@ d3.csv("http://0.0.0.0:8888/data/timeline.csv", function(data) {
 
   var rect = d3.select("#timeline").node().getBoundingClientRect(); 
 
-  var margin = {top: -200, right:80, bottom: 80, left:80},
+  var margin = {top: -200, right:80, bottom: 0, left:80},
       width = rect.width - margin.left - margin.right,
       height = rect.height - margin.top - margin.bottom;
 
@@ -36,6 +36,30 @@ d3.csv("http://0.0.0.0:8888/data/timeline.csv", function(data) {
   var startDate = 0,
       endDate = parseInt(lastElem.TIME);
 
+
+  var sliderRange = d3
+    .sliderTop()
+    .min(startDate)
+    .max(endDate)
+    .width(width)
+    .ticks(10)
+    .default([startDate, endDate])
+    .fill('#2196f3')
+    .on('end', val => {
+      updateOthers(val[0], val[1])
+    });
+
+  var gRange = d3
+    .select('#timeline')
+    .append('svg')
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append('g')
+    .attr('transform', "translate(" + margin.left + "," + height/5 + ")");
+
+  gRange.call(sliderRange);
+
+/*
   var moving = false;
   var currentValue = 0;
   var targetValue = width;
@@ -84,7 +108,7 @@ d3.csv("http://0.0.0.0:8888/data/timeline.csv", function(data) {
       .attr("x", x)
       .attr("y", 10)
       .attr("text-anchor", "middle")
-      .text(function(d) { /*return formatDateIntoYear(d)*/ `${d}`; });
+      .text(function(d) {  `${d}`; });
 
   var handle = slider.insert("circle", ".track-overlay")
       .attr("class", "handle")
@@ -93,7 +117,7 @@ d3.csv("http://0.0.0.0:8888/data/timeline.csv", function(data) {
   var label = slider.append("text")  
       .attr("class", "label")
       .attr("text-anchor", "middle")
-      .text(/*formatDate(startDate)*/`${startDate}`)
+      .text(`${startDate}`)
       .attr("transform", "translate(0," + (-25) + ")")
 
   function update(h) {
@@ -101,7 +125,7 @@ d3.csv("http://0.0.0.0:8888/data/timeline.csv", function(data) {
     handle.attr("cx", x(h));
     label
       .attr("x", x(h))
-      .text(/*formatDate(h)*/ `${Math.round(h)}`);
+      .text(`${Math.round(h)}`);
 
     // filter data set and redraw plot
     //var newData = dataset.filter(function(d) {
@@ -110,13 +134,14 @@ d3.csv("http://0.0.0.0:8888/data/timeline.csv", function(data) {
     //drawPlot(newData);
 
   }
+*/
   
-  function updateOthers(h) {
+  function updateOthers(tmin, tmax) {
   
-    filter_scatterplot(h)
-    filter_coverage(h)
-    filter_inputs(h)
+    filter_scatterplot(tmin, tmax)
+    filter_coverage(tmin, tmax)
+    filter_inputs(tmin, tmax)
   
   }
-
+  
 })

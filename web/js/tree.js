@@ -18,7 +18,7 @@ var treeData =
 // ************** Generate the tree diagram	 *****************
 var rect = d3.select("#tree").node().getBoundingClientRect(); 
 
-var margin = {top: 20, right: 90, bottom: 30, left: 90},
+var margin = {top: 50, right: 90, bottom: 30, left: 90},
     width = rect.width - margin.left - margin.right,
     height = rect.height - margin.top - margin.bottom;
 

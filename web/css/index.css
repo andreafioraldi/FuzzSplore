@@ -29,8 +29,8 @@ html, body {
 #scatterplot {
   float: left;
   width: 100%;
-  min-height: calc(60% - 0px);
-  height: calc(60% - 0px);
+  min-height: calc(60% - 50px);
+  height: calc(60% - 50px);
   /*border: 2px solid gray;*/
 }
 
@@ -47,20 +47,27 @@ html, body {
   width: 100%;
   min-height: calc(20% - 0px);
   height: calc(20% - 0px);
-  /*border: 2px solid gray;*/
+}
+
+#legend {
+  float: left;
+  width: 100%;
+  min-height: 40px;
+  height: 40px;
 }
 
 #tree {
   width: 100%;
-  min-height: calc(100% - 150px);
-  height: calc(100% - 150px);
+  min-height: calc(100% - 100px - 40px);
+  height: calc(100% - 100px - 40px);
 }
 
 #timeline {
   width: calc(100% - 20px);
-  min-height: calc(150px - 20px);
-  height: calc(150px - 20px);
+  min-height: calc(100px - 20px);
+  height: calc(100px - 20px);
   margin: 10px;
+  /*border: 2px solid gray;*/
 }
 
 

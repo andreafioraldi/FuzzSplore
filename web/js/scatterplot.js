@@ -1,4 +1,4 @@
-var filter_scatterplot = function (time) {}
+var filter_scatterplot = function (tmin, tmax) {}
 
 //Read the data
 d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
@@ -70,7 +70,55 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
       .attr("class", "non_brushed")
       .style("fill", function (d) { return colorScale(d.NAME); })
 
-  filter_scatterplot = function (time) {
+  var fuzzers = Array.from(new Set(data.map(function(d) {return d.NAME})))
+
+  // Add a legend (interactive)
+  var svg_legend = d3.select("#legend")
+    .append("svg")
+      .attr("width", rect.width)
+      .attr("height", d3.select("#legend").node().getBoundingClientRect().height)
+    .append("g")
+
+  var leg_idx = {}
+
+  svg_legend
+    .selectAll("myLegend")
+    .data(['Legend:'].concat(fuzzers))
+    .enter()
+      .append('g')
+      .append("text")
+        .attr('x', function(d,i){
+          var l = 0
+          for (var j = 0; j < i; ++j)
+            l += leg_idx[j]*15 + 15
+          leg_idx[i] = d.length
+          return 80 + l
+        })
+        .attr('y', 30)
+        .text(function(d) { return d; })
+        .style("fill", function(d){ if (d == 'Legend:') return 'black'; return colorScale(d); })
+        .style("font-size", 15)
+        .attr("font-weight", function(d,i) { if (d !== 'Legend:') return 'bold'; else 'normal';})
+      .on("click", function(fuzz){
+        if (fuzz == 'Legend:') return
+        
+        var sel = circles.filter(function(d){return d.NAME == fuzz})
+        sel.transition().style("opacity", sel.style("opacity") > 0 ? 0:0.5)
+        
+        sel = d3.selectAll('.inputline').filter(function(d){return d.key == fuzz})
+        sel.transition().style("opacity", sel.style("opacity") > 0 ? 0:1)
+        
+        sel = d3.selectAll('.covline').filter(function(d){return d.key == fuzz})
+        sel.transition().style("opacity", sel.style("opacity") > 0 ? 0:1)
+
+        sel = d3.selectAll('.sel_line').filter(function(){return d3.select(this).attr('fuzzer') == fuzz})
+        if (sel.data().length > 0)
+          sel.transition().style("opacity", sel.style("opacity") > 0 ? 0:1)
+
+      })
+
+
+  filter_scatterplot = function (tmin, tmax) {
   
     // TODO simply hide
   
@@ -79,7 +127,7 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
   
     d3.selectAll(".non_brushed").remove()
     
-    var data2 = data.filter((d) => { console.log(+d.TIME); return +d.TIME < time })
+    var data2 = data.filter((d) => { return +d.TIME <= tmax && +d.TIME >= tmin })
     
     circles = svg.append('g')
       .selectAll("dot")
@@ -150,5 +198,6 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
     .on("brush", highlightBrushedCircles); 
   svg.append("g")
      .call(brush);
+
 
 })

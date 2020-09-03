@@ -1,6 +1,6 @@
 
 var coverage_addline = function(fuzzer, time) {}
-var filter_coverage = function (time) {}
+var filter_coverage = function (tmin, tmax) {}
 
 d3.csv("http://0.0.0.0:8888/data/coverage.csv", function(data) {
 
@@ -81,21 +81,18 @@ d3.csv("http://0.0.0.0:8888/data/coverage.csv", function(data) {
             (d.values)
         })
 
-  filter_coverage = function (time) {
-  
-    // TODO simply hide
+  filter_coverage = function (tmin, tmax) {
   
     var sumstat2 = []
     for (k in sumstat) {
       sumstat2.push( {
         key: sumstat[k].key,
-        values: sumstat[k].values.filter((d) => { return +d.TIME < time })
+        values: sumstat[k].values.filter((d) => { return +d.TIME <= tmax && +d.TIME >= tmin })
       } )
     }
-    console.log(sumstat2)
     
-    if (time < xmax) {
-      x.domain([xmin, time])
+    if (tmax < xmax || tmin > xmin) {
+      x.domain([tmin, tmax])
       xAxis.transition().duration(1000).call(d3.axisBottom(x))
     }
     
@@ -127,6 +124,7 @@ d3.csv("http://0.0.0.0:8888/data/coverage.csv", function(data) {
       .attr("x2", x(+time))
       .attr("y2", 0)
       .attr("stroke-width", 1)
+      .attr("fuzzer", function(d){ return fuzzer })
       .attr("stroke", colorScale(fuzzer));
     
   }

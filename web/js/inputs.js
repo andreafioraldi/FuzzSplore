@@ -1,6 +1,6 @@
 
 var inputs_addline = function(fuzzer, time) {}
-var filter_inputs = function (time) {}
+var filter_inputs = function (tmin, tmax) {}
 
 d3.csv("http://0.0.0.0:8888/data/inputs.csv", function(data) {
 
@@ -81,7 +81,7 @@ d3.csv("http://0.0.0.0:8888/data/inputs.csv", function(data) {
             (d.values)
         })
 
-  filter_inputs = function (time) {
+  filter_inputs = function (tmin, tmax) {
   
     // TODO simply hide
   
@@ -89,12 +89,12 @@ d3.csv("http://0.0.0.0:8888/data/inputs.csv", function(data) {
     for (k in sumstat) {
       sumstat2.push( {
         key: sumstat[k].key,
-        values: sumstat[k].values.filter((d) => { return +d.TIME < time })
+        values: sumstat[k].values.filter((d) => { return +d.TIME <= tmax && +d.TIME >= tmin })
       } )
     }
     
-    if (time < xmax) {
-      x.domain([xmin, time])
+    if (tmax < xmax || tmin > xmin) {
+      x.domain([tmin, tmax])
       xAxis.transition().duration(1000).call(d3.axisBottom(x))
     }
     
@@ -137,6 +137,7 @@ d3.csv("http://0.0.0.0:8888/data/inputs.csv", function(data) {
       .attr("x2", x(+time))
       .attr("y2", 0)
       .attr("stroke-width", 1)
+      .attr("fuzzer", function(d){ return fuzzer })
       .attr("stroke", colorScale(fuzzer));
     
   }
