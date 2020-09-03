@@ -1,5 +1,5 @@
 
-var coverage_addline = function(fuzzer, time) {}
+var coverage_addline = function(fuzzer, id, time) {}
 var filter_coverage = function (tmin, tmax) {}
 
 d3.csv("http://0.0.0.0:8888/data/coverage.csv", function(data) {
@@ -87,7 +87,8 @@ d3.csv("http://0.0.0.0:8888/data/coverage.csv", function(data) {
     var sumstat2 = []
     var ymins = []
     var ymaxs = []
-    for (k in sumstat) {
+    
+    for (var k = 0; k < sumstat.length; ++k) {
       sumstat2.push( {
         key: sumstat[k].key,
         values: sumstat[k].values.filter((d) => { return +d.TIME <= tmax && +d.TIME >= tmin })
@@ -134,7 +135,7 @@ d3.csv("http://0.0.0.0:8888/data/coverage.csv", function(data) {
     
   }
 
-  coverage_addline = function (fuzzer, time) {
+  coverage_addline = function (fuzzer, id, time) {
     
     svg.append("svg:line")
       .attr("class", "sel_line")
@@ -144,6 +145,7 @@ d3.csv("http://0.0.0.0:8888/data/coverage.csv", function(data) {
       .attr("y2", 0)
       .attr("stroke-width", 1)
       .attr("fuzzer", function(d){ return fuzzer })
+      .attr("name", function(d){ return id })
       .attr("stroke", colorScale(fuzzer));
     
   }

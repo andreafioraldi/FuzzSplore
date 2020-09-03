@@ -21,7 +21,7 @@ d3.json('http://0.0.0.0:8888/data/graphs.json', data => {
     
     divs[fuzzer] = new_div
     
-    networkChart = renderChartCollapsibleNetwork(fuzzer)
+    networkChart = render_network(fuzzer)
       .svgHeight(height)
       .svgWidth(width)
       .container("#graph_div_" + fuzzer)
@@ -123,15 +123,8 @@ d3.json('http://0.0.0.0:8888/data/graphs.json', data => {
       })
     
   })
-/*  
 
-This code is based on following convention:
-
-https://github.com/bumbeishvili/d3-coding-conventions
-
-*/
-
-function renderChartCollapsibleNetwork(fuzzer) {
+function render_network(fuzzer) {
 
   // exposed variables
   var attrs = {
@@ -145,7 +138,7 @@ function renderChartCollapsibleNetwork(fuzzer) {
     nodeRadius: 18,
     container: 'body',
     distance: 100,
-    nodeStroke: '#41302D',
+    nodeStroke: 'black',
     nodeTextColor: 'black',
     linkColor: '#303030',
     activeLinkColor: "blue",
@@ -318,8 +311,8 @@ function renderChartCollapsibleNetwork(fuzzer) {
         links = links.enter()
           .append('line')
           .attr('class', 'link')
-          .merge(links).attr('stroke', '#9ecae1');
-        links.attr('stroke', attrs.linkColor).attr('stroke-width', attrs.lineStrokeWidth)
+          .merge(links)//.style('stroke', '#9ecae1');
+        //links.style('stroke', attrs.linkColor).attr('stroke-width', attrs.lineStrokeWidth)
 
         //node groups
         nodes = nodesWrapper.selectAll('.node').data(nodesArr, d => d.id);
@@ -345,7 +338,10 @@ function renderChartCollapsibleNetwork(fuzzer) {
           .append("circle")
           .attr('r', 7)
           .attr('stroke-width', 5)
-          .attr('stroke', attrs.nodeStroke)
+          .style('stroke', attrs.nodeStroke)
+          .attr('class', 'treenode')
+          .attr('name', d => d.data.name)
+          .attr('fuzzer', fuzzer)
           //.style("fill", function (d) { return colorScale(d.data.fuzzer); })
 
         //merge  node groups and style it
@@ -456,7 +452,7 @@ function renderChartCollapsibleNetwork(fuzzer) {
         linksWrapper.selectAll('.link')
           .filter(l => l.source.id == d.id || l.target.id == d.id)
           .attr('opacity', 1)
-          .attr('stroke', attrs.activeLinkColor)
+          //.style('stroke', attrs.activeLinkColor)
 
         
 
@@ -467,19 +463,41 @@ function renderChartCollapsibleNetwork(fuzzer) {
 
         // return things back to normal
         nodesWrapper.selectAll('.node').attr('opacity', 1);
-        linksWrapper.selectAll('.link').attr('opacity', 1).attr('stroke', attrs.linkColor)
+        linksWrapper.selectAll('.link').attr('opacity', 1)//.style('stroke', attrs.linkColor)
       }
 
       // --------------- handle node click event ---------------
       function nodeClick(d) {
       
-        console.log(d)
-        
-        nodesWrapper.selectAll('.node').attr('fill', 'red');
-        console.log(nodesWrapper.selectAll('.node').attr('opacity'))
-
         //free fixed nodes
         nodes.each(d => { d.fx = null; d.fy = null })
+        
+        var idnode = d3.selectAll('.treenode').filter(function (dd) {
+          return d3.select(this).attr('fuzzer') == fuzzer && +dd.data.name == +d.data.name
+        })
+        if (idnode.style('stroke') == 'red') {
+        
+          idnode.style('stroke', 'black')
+          d3.selectAll('.brushed').filter(function (dd) {
+            return (+dd.ID == +d.data.name && dd.NAME == fuzzer)
+          }).attr('class', 'non_brushed')
+          d3.selectAll('.sel_line').filter(function (dd) {
+            return d3.select(this).attr('fuzzer') == fuzzer && d3.select(this).attr('name') == +d.data.name
+          }).remove()
+          
+        } else {
+      
+          idnode.style('stroke', 'red')
+          d3.selectAll('.non_brushed').filter(function (dd) {
+            return (+dd.ID == +d.data.name && dd.NAME == fuzzer)
+          }).attr('class', 'brushed')
+          var t = id_to_time(fuzzer, d.data.name)
+          if (t !== undefined) {
+            inputs_addline(fuzzer, d.data.name, t);
+            coverage_addline(fuzzer, d.data.name, t);
+          }
+
+        }
 
         // collapse or expand node
         /*if (d.children) {

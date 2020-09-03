@@ -162,32 +162,51 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
 
       d3.selectAll(".sel_line").remove();
       
-      circles.filter(function (){
+      var tree_nodes = d3.selectAll('.treenode')
+      tree_nodes.style('stroke', 'black') 
+      
+      var filtered = circles.filter(function (){
 
            var cx = d3.select(this).attr("cx"),
                cy = d3.select(this).attr("cy");
 
            return isBrushed(brush_coords, cx, cy);
 
-       }).data().forEach(function (elem) {
+       })
+       
+       var ptmap = {}
+       filtered.data().forEach(function (elem) {
         
         var t = id_to_time(elem.NAME, elem.ID)
         if (t !== undefined) {
-          inputs_addline(elem.NAME, t);
-          coverage_addline(elem.NAME, t);
+          inputs_addline(elem.NAME, elem.ID, t);
+          coverage_addline(elem.NAME, elem.ID, t);
         }
         
-       })
+        if (!(elem.NAME in ptmap))
+          ptmap[elem.NAME] = new Set()
+        
+        ptmap[elem.NAME].add(+elem.ID)
 
+       })
+     
+      console.log(ptmap)
+      var idnode = tree_nodes.filter(function (d) {
+        if (ptmap[d3.select(this).attr('fuzzer')] === undefined) return false
+        return ptmap[d3.select(this).attr('fuzzer')].has(+d.data.name)
+      })
+      idnode.style('stroke', 'red')      
+     
       // style brushed circles
-      circles.filter(function (){
+      filtered.attr("class", "brushed");
+      /*circles.filter(function (){
 
            var cx = d3.select(this).attr("cx"),
                cy = d3.select(this).attr("cy");
 
            return isBrushed(brush_coords, cx, cy);
        })
-       .attr("class", "brushed");
+       .attr("class", "brushed");*/
 
     }
   }
