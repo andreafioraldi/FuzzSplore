@@ -58,11 +58,12 @@ d3.csv("http://0.0.0.0:8888/data/coverage.csv", function(data) {
     .call(d3.axisBottom(x));
 
   // Add Y axis
-  var y = d3.scaleLog()
+  var y = d3.scaleLinear()
     .domain([ymin, ymax])
     .range([ height, 0 ]);
-  svg.append("g")
-    .call(d3.axisLeft(y).tickFormat(d3.format("d")));
+    
+  var yAxis = svg.append("g")
+    .call(d3.axisLeft(y).ticks(5).tickFormat(d3.format("d")));
   
   var lines = {}
   
@@ -84,22 +85,40 @@ d3.csv("http://0.0.0.0:8888/data/coverage.csv", function(data) {
   filter_coverage = function (tmin, tmax) {
   
     var sumstat2 = []
+    var ymins = []
+    var ymaxs = []
     for (k in sumstat) {
       sumstat2.push( {
         key: sumstat[k].key,
         values: sumstat[k].values.filter((d) => { return +d.TIME <= tmax && +d.TIME >= tmin })
       } )
+      ymins.push(d3.min(sumstat2[k].values, (d) => { return +d.VAL; }))
+      ymaxs.push(d3.max(sumstat2[k].values, (d) => { return +d.VAL; }))
     }
     
-    if (tmax < xmax || tmin > xmin) {
+    var new_ymin = d3.min(ymins) -ptsize
+    var new_ymax = d3.max(ymaxs) +ptsize
+    
+    console.log(tmin)
+    
+    if (new_ymin != ymin || new_ymax != ymax) {
+      y.domain([new_ymin, new_ymax])
+      yAxis.transition().duration(1000).call(d3.axisLeft(y).ticks(5).tickFormat(d3.format("d")))
+      ymin = new_ymin
+      ymax = new_ymax
+    }
+    
+    if (tmax != xmax || tmin != xmin) {
       x.domain([tmin, tmax])
       xAxis.transition().duration(1000).call(d3.axisBottom(x))
+      xmin = tmin
+      xmax = tmax
     }
     
     d3.selectAll(".covline").remove()
     
     svg.selectAll(".line")
-        .data(sumstat2)
+        .data(sumstat)
         .enter()
         .append("path")
           .attr("fill", "none")

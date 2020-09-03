@@ -38,10 +38,10 @@ d3.csv("http://0.0.0.0:8888/data/inputs.csv", function(data) {
   var xmin = d3.min(data, (d) => { return +d.TIME; }) -ptsize
   var xmax = d3.max(data, (d) => { return +d.TIME; }) +ptsize
   
-  data2 = data.filter((d) => { return +d.TIME > 100 })
+  //data2 = data.filter((d) => { return +d.TIME > 100 })
   
-  var ymin = d3.min(data2, (d) => { return +d.VAL; }) -ptsize
-  var ymax = d3.max(data2, (d) => { return +d.VAL; }) +ptsize
+  var ymin = d3.min(data, (d) => { return +d.VAL; }) -ptsize
+  var ymax = d3.max(data, (d) => { return +d.VAL; }) +ptsize
   
   // group the data: I want to draw one line per group
   var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
@@ -61,10 +61,10 @@ d3.csv("http://0.0.0.0:8888/data/inputs.csv", function(data) {
 
   // Add Y axis
   var y = d3.scaleLinear()
-    .domain([ymin, ymax])
+    .domain([0, ymax])
     .range([ height, 0 ]);
-  svg.append("g")
-    .call(d3.axisLeft(y));
+  var yAxis = svg.append("g")
+    .call(d3.axisLeft(y).ticks(5).tickFormat(d3.format("d")));
   
   svg.selectAll(".line")
       .data(sumstat)
@@ -83,19 +83,35 @@ d3.csv("http://0.0.0.0:8888/data/inputs.csv", function(data) {
 
   filter_inputs = function (tmin, tmax) {
   
-    // TODO simply hide
-  
     var sumstat2 = []
+    var ymins = []
+    var ymaxs = []
     for (k in sumstat) {
       sumstat2.push( {
         key: sumstat[k].key,
         values: sumstat[k].values.filter((d) => { return +d.TIME <= tmax && +d.TIME >= tmin })
       } )
+      ymins.push(d3.min(sumstat2[k].values, (d) => { return +d.VAL; }))
+      ymaxs.push(d3.max(sumstat2[k].values, (d) => { return +d.VAL; }))
     }
     
-    if (tmax < xmax || tmin > xmin) {
+    var new_ymin = d3.min(ymins) -ptsize
+    var new_ymax = d3.max(ymaxs) +ptsize
+    
+    console.log(tmin)
+    
+    if (/*new_ymin != ymin ||*/ new_ymax != ymax) {
+      y.domain([0, new_ymax])
+      yAxis.transition().duration(1000).call(d3.axisLeft(y).ticks(5).tickFormat(d3.format("d")))
+      ymin = new_ymin
+      ymax = new_ymax
+    }
+    
+    if (tmax != xmax || tmin != xmin) {
       x.domain([tmin, tmax])
       xAxis.transition().duration(1000).call(d3.axisBottom(x))
+      xmin = tmin
+      xmax = tmax
     }
     
     d3.selectAll(".inputline").remove()
