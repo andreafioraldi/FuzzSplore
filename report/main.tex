@@ -1,0 +1,203 @@
+\documentclass[conference,compsoc]{IEEEtran}
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+    
+\usepackage{epigraph}
+\usepackage{listings}
+\usepackage{adjustbox}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{authblk}
+
+\usepackage[hyphens]{url}
+
+\newcommand{\myparagraph}[1]{\smallskip\noindent{\bf #1.}}
+\newcommand{\myfirstparagraph}[1]{\noindent{\bf #1.}}
+\newcommand{\scedit}[1]{{\color{black} #1}} % blue
+    
+\begin{document}
+
+\title{FuzzSplore: Visualizing Feedback-Driven Fuzzing Techniques}
+
+\iffalse
+\author{\IEEEauthorblockN{Andrea Fioraldi}
+\IEEEauthorblockA{\textit{1692419}}
+\and
+\IEEEauthorblockN{Luigi Paolo Pileggi}
+\IEEEauthorblockA{\textit{0000000}}
+}
+
+\author{\IEEEauthorblockN{Andrea Fioraldi\IEEEauthorrefmark{1}\IEEEauthorrefmark{2},
+Luigi Paolo Pileggi\IEEEauthorrefmark{1}}
+\IEEEauthorblockA{andreafioraldi@gmail.com,
+gigimail@gigi.com\\
+\IEEEauthorrefmark{1} Sapienza University of Rome,
+\IEEEauthorrefmark{2} EURECOM}}
+\fi
+
+\author[1]{Andrea Fioraldi}
+\author[1]{Luigi Paolo Pileggi}
+\affil[1]{Sapienza University, Rome, Italy \authorcr {\tt \{fioraldi.1692419, pileggi.1691249\}@studenti.uniroma1.it}\vspace{1.5ex}}
+
+\maketitle
+
+\begin{abstract}
+Fuzz Testing techniques are the state of the art in software testing for security issues nowadays.
+Their great effectiveness attracted the attention of researchers and hackers and involved them in developing a lot of new techniques to improve Fuzz Testing.
+The evaluation and the cross-comparation of these technique is an almost open problem and in this paper we propose a human-driven approach based on information visualization.
+We developed a prototype upon the {\sc AFL++} fuzzing framework, {\sc FuzzSplore}, that an analyst can use to get useful insights about different fuzzing configurations applied to a specific target in order to choose or tune the best technique for the upcoming fuzzing campaign.
+\end{abstract}
+
+\section{Introduction}
+
+{\em Fuzz Testing} or {\em Fuzzing} is a family of techniques to automatically uncovers bugs in software.
+
+Due to its effectiveness, much more efficient than other software testing techniques like {\it Symbolic Execution} \cite{redqueen} \cite{sebastian}, the research in this field is flourishing and several different techniques were developed to improve fuzz testing, both from academy and industry.
+
+The evaluation and the comparison of these techniques, however, is a debatable matter \cite{fuzzeval}.
+
+A common proxy is the comparison of the code coverage reached over time by each fuzzer, due to the fact that a fuzzer cannot find a bug if it does not explore at least the vulnerable code segment.
+Another widely used metric is found bugs over time, but a bug can be found just thanks to randomism or by specific target-dependant actions taken by the fuzzer and this makes the evaluations very prone to overfitting.
+
+The data collected using these metrics are often representable using a simple time-based graph that shows the evolution of the fuzzing algorithm.
+
+This approach is useful for an immediate basic comparison between two or more techniques, an analyst have to just see which technique reaches more coverage in less time, but does not reveal the properties of a fuzzer regards specific types of programs states.
+
+For instance, a technique can be better than another in exploring some types of program states and in the same time reaching less code coverage.
+The technique will not cover the bugs in the unexplored code of course, but it may uncover bugs in the program points that it can better explore.
+An example of such technique is the directed fuzzer towards sanitizers violations by \"Osterlund et al. \cite{parmesan}.
+
+The problem of the evaluation of fuzzing techniques is important not only when the aim is to generally states which fuzzer is best, but also when an analyst wants to select the best fuzzers for a single target. It is common that fuzzers that are considered generally better than other on some targets performe worst than the others \cite{aflplusplus}.
+
+We propose {\sc FuzzSplore}, a tool that allows an analyst to manually explore the evolution of different fuzzing techniques regards a single target program.
+
+The main insight that an user can get using the tool are:
+
+\begin{enumerate}
+\item The ability of a fuzzer to generate clusters of inputs that are correlated in terms of covered program points;
+\item The ability of a fuzzer in generating diversified inputs with its mutational algorithm;
+\item The ability of a fuzzer to reach program points exploring intermediate inputs that are not an improvement in terms of coverage \cite{besensitive}.
+\end{enumerate}
+
+These insights can drive the user in the choice of the best technique to use for the selected program under test (PUT).
+
+\section{Background}
+
+The simplest description of Feedback-driven Fuzzing is an algorithm that provides apparently random data to a computer program and then it watches for crashes or unexpected states and also saves the generated input for later processing if they covers interesting new states in terms of the chosen feedback \cite{fuzzing-book}.
+
+Tipically, the property of the program used as feedback is the set of the edges in the program Control Flow Graph \cite{compilerbook} in what is the so-called {\it Coverage-guided Fuzzing} (CGF).
+
+The inputs are mutations of previously saved inputs in the fuzzing loop in Mutational Fuzzing (Figure \ref{fig:cfg}) or generated from scratch from a model in Generational Fuzzing.
+
+We base our implementation on {\sc AFL++} \cite{aflplusplus}, a widely used fuzzer in the recent times, that is a Mutational Coverage Guided Fuzzer.
+
+\begin{figure}
+\includegraphics[scale=0.2]{cgf}
+\centering
+\caption{Basic representation of the Mutational Coverage Guided Fuzzing algorithm}
+\label{fig:cfg}
+\end{figure}
+
+State of the art Coverage-Guided Fuzzers encode the approximate executed path in a representation that is easy and fast to process.
+{\sc AFL++} uses a vector of 65536 entries by default, the {\it hitcounts} vector.
+
+Each coordinate is associated with an edge and each value represents how many times the edge is executed modulo 256.
+
+When a values greater than the previous one is registered in this vector, the fuzzer consider the input interesting and saves it.
+
+Some extensions of CGF save also intermediate inputs that are a superset of the coverage reported in the hitcounts vector, like \cite{lafintel} \cite{ijon} \cite{besensitive}.
+
+In general, when an input is saved, we can associate it to the testcase that generated it by mutation, the {\it parent} testcase. In this way, is easy to construct a tree of generated inputs that represents the progress of the hill climbing algorithm of the fuzzer, the {\it levels} tree.
+
+Looking for parents in this tree, we can evaluate if the intermediate inputs generated by the specific technique is effective.
+
+\section{Methodology}
+
+
+
+\subsection{Data Retrieval}
+
+\subsection{Visualization}
+
+\subsection{Analyst Feedback}
+
+\subsection{Choosing and Tuning Fuzzers}
+
+\section{Implementation}
+
+
+\section{Conclusion}
+
+
+
+
+
+\iffalse
+\section{Proposal}
+
+We propose a time-based visualization of the progress of different techniques based on {\sc AFL++}.
+
+The first view will be a {\em navigable levels tree}. The user can select the technique in a scrollbar and view the associated tree.
+
+Each node of the tree can be selected to view if it can be considered an interesting input for another technique. This will help in understanding the insight 3, were a tecnhique rech a program points thanks to an intermediate input that another technqiue cannot see as interesting.
+
+There will be also a {\em scatterplot representing the inputs} in terms of covered state.
+We collect the hitcounts vector of each input, reduce the dimensionality using PCA and then apply t-SNE on the vector with reduced dimensions to preserve outliners in these most important dimensions.
+
+The color of each point will be related to the technique that generated the input.
+
+In this scatterplot, the user can manually select a cluster of points that represents inputs with related paths.
+
+Of course it can choose to consider only a subset of the techniques and hide that points from the view.
+
+Doing that, will help to cope the insight number 1 looking at the density of the cluster for each different technique.
+
+When doing this, the user can then choose to highlight in the scatterplot the inputs that are parents for the points in the cluster.
+
+A technque that is able to generate inputs from other that are almost completely unrelated have a better mutational algorithm than a technqiue that generate inputs similar to the parents, this helps the analyst with insight number 2.
+
+The tree an the scatterplot are synchronized. When a cluster is selected, the corresponding inputs are highlighted in the tree.
+
+All these points can be hidden using a {\em time bar}. Selecting a specific lapse of time, only inputs founds by the fuzzer before that time are considered.
+
+The other two views, related to the evolution in time, are the {\em coverage over time graph} and the {\em new interesting inputs per seconds graph}.
+
+When a testcase is selected (both in the scatterplot or in the tree) a line appears in these graphs highlighing the time in which the testcase was discovered.
+
+Coverage over time shows when an input that is important in terms of new coverage is found and so suggest the user where it should put the time bar for a targeted analysis.
+
+Inputs per seconds is related with the levels tree. If a fuzzer generates too many intermediate testcases it can saturate the evolution of the alogrithm, so if we select an intermediate input in the levels tree and see an peak in this graph likely the technique suffers from path explosion.
+
+In order to give an idea about dimensionality, we pick pcre2 version 183 (SVN) as example PUT. We compiled it with the AFL++ compiler wrapper and the addition of AddressSanitizer and UndefinedBehaviourSanitizer. After 12 hours of fuzzing, we got 14853 generated inputs in the fuzzer queue.
+
+As said before, the hitcounts vector has 65536 dimensions, so in this simple case we have 973406208 elements.
+
+\section{Usage}
+
+An analyst that wants to compare different Fuzzing techniques on a target program will do the following:
+
+\begin{enumerate}
+\item Run the fuzzers (one for each technique) for the same amount time (more than 12h is recommended);
+\item Use the tool to process the data from the fuzzing campaigns;
+\item Use the visual analytics part of the tool to understand which subset of techniques are effective;
+\item Restart the fuzzing campaign assigning computational power to only the chosen techniques;
+\item The behavior of fuzzers in a long time can saturate, maybe retry from step 2 to reduce again the set of techniques.
+\end{enumerate}
+
+Saturation of fuzzer is a problem that was rarely addressed in academic literature but that affects each type of Feedback-driven Fuzzer \cite{saturation}.
+Fuzzing campaigns can last months, or never ends, like for OSS-Fuzz \cite{serebryany2017oss}, the continuous fuzzing service for OSS software by Google, and a tool that can guide towards the selection of techniques that avoid saturation can help a lot the campaign.
+
+Saturation is only one of the problems that can be addressed with {\sc FuzzSplore}, but it is the problem that makes multiple uses of the tool during the campaign necessary.
+\fi
+
+\bibliographystyle{IEEEtran}
+\bibliography{bibliography}
+
+\end{document}

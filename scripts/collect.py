@@ -86,7 +86,6 @@ def merge_showmap(virgin_bits):
 testcases = {}
 graph = {}
 timeline = {}
-inputs_for_seconds = {}
 coverage_over_time = {}
 
 #vects = open(args.output + '_vectors.csv', 'w')
@@ -124,9 +123,6 @@ for fuzzer in conf:
         timeline[name] = timeline.get(name, {})
         timeline[name][sec] = timeline[name].get(sec, [])
         timeline[name][sec] += [id]
-        inputs_for_seconds[sec] = inputs_for_seconds.get(sec, {})
-        inputs_for_seconds[sec][name] = inputs_for_seconds[sec].get(name, 0)
-        inputs_for_seconds[sec][name] += 1
         if src is not None:
             for srcid in src:
                 graph[name] = graph.get(name, {})
@@ -215,9 +211,12 @@ covf.close()
 print("Saving to %s_inputs.csv..." % args.output)
 inpf = open(args.output + '_inputs.csv', 'w')
 inpf.write('NAME,TIME,VAL\n')
-for sec in sorted(inputs_for_seconds.keys()):
+'''for sec in sorted(inputs_for_seconds.keys()):
     for name in inputs_for_seconds[sec]:
-        inpf.write('%s,%d,%d\n' % (name, sec, inputs_for_seconds[sec][name]))
+        inpf.write('%s,%d,%d\n' % (name, sec, inputs_for_seconds[sec][name]))'''
+for name in timeline:
+    for sec in timeline[name]:
+        inpf.write('%s,%d,%s\n' % (name, sec, len(timeline[name][sec])))
 inpf.close()
 
 print("Saving to %s_timeline.csv..." % args.output)

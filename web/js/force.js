@@ -195,7 +195,7 @@ function render_network(fuzzer) {
     nodeTextColor: 'black',
     linkColor: '#303030',
     activeLinkColor: "blue",
-    hoverOpacity: 0.5,
+    hoverOpacity: 0.3,
     maxTextDisplayZoomLevel: 1,
     textDisplayed: true,
     lineStrokeWidth: 1.5,
