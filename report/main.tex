@@ -1,10 +1,20 @@
 \documentclass[conference,compsoc]{IEEEtran}
+\usepackage{hyperref}
+
+\usepackage[justification=raggedright,format=hang]{caption}
+\captionsetup{labelformat=empty,labelsep=none}
+
+\usepackage{url}
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\makeatother
 
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
 \usepackage{graphicx}
 \usepackage{textcomp}
+\usepackage{float}
 \usepackage{xcolor}
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
@@ -15,8 +25,6 @@
 \usepackage{multirow}
 \usepackage{array}
 \usepackage{authblk}
-
-\usepackage[hyphens]{url}
 
 \newcommand{\myparagraph}[1]{\smallskip\noindent{\bf #1.}}
 \newcommand{\myfirstparagraph}[1]{\noindent{\bf #1.}}
@@ -47,6 +55,13 @@ gigimail@gigi.com\\
 \affil[1]{Sapienza University, Rome, Italy \authorcr {\tt \{fioraldi.1692419, pileggi.1691249\}@studenti.uniroma1.it}\vspace{1.5ex}}
 
 \maketitle
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=1.0\textwidth]{img/full}
+\caption{Complete view of the {\sc FuzzSplore} visual panel.}
+\label{fig:full}
+\end{figure*}
 
 \begin{abstract}
 Fuzz Testing techniques are the state of the art in software testing for security issues nowadays.
@@ -98,8 +113,8 @@ The inputs are mutations of previously saved inputs in the fuzzing loop in Mutat
 
 We base our implementation on {\sc AFL++} \cite{aflplusplus}, a widely used fuzzer in the recent times, that is a Mutational Coverage Guided Fuzzer.
 
-\begin{figure}
-\includegraphics[scale=0.2]{cgf}
+\begin{figure}[H]
+\includegraphics[scale=0.2]{img/cgf}
 \centering
 \caption{Basic representation of the Mutational Coverage Guided Fuzzing algorithm}
 \label{fig:cfg}
@@ -120,9 +135,25 @@ Looking for parents in this tree, we can evaluate if the intermediate inputs gen
 
 \section{Methodology}
 
+A {\em fuzzing campaign} is the process of running one or more fuzzers for a long period of time or even continously like in OSS-Fuzz \cite{serebryany2017oss}.
 
+Security researchers tipically starts fuzzing using naive configurations and off-the-shelf fuzzers, then, meanwhile the campaign runs, observe the evolution and tune the fuzzers.
+
+Our proposed approach aims to insert in the observation-tuning feedback loop a visual component to hekp the researcher in better understand insights about the fuzzers testing a particular target.
+
+The data processed by {\em FuzzSplore} comes from the execution of the corpus of testcases that each fuzzer saved so far. The execution is instrumented and various properties are observed.
+
+Then we visualize these collected properties and the user can relate them to better understand what is going. After that, the user can choose to drop some fuzzers if less effective and assign more resources (tipically CPUs) to the most effective fuzzers or tune each individual fuzzer.
+
+The fuzzing campaing can then continue. When it saturates, the analyst can collect insights using our tool and restart the visual analytics feedback-loop.
+
+Saturation of fuzzers, when no more additional state is explored or the number of states explodes, is a problem that was rarely addressed in academic literature but that affects each type of Feedback-driven Fuzzer \cite{saturation},  and a tool that can guide towards the selection of techniques that avoid saturation can help a lot the campaign.
 
 \subsection{Data Retrieval}
+
+% We developed a script to extract the data from the execution of the various instrumented programs used by each fuzzer.
+
+
 
 \subsection{Visualization}
 
