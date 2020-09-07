@@ -102,21 +102,21 @@ for fuzzer in conf:
     name = fuzzer['name']
 
     bitmaps = []
-    virgin_bits = [0] * (2 ** 16)
+    #virgin_bits = [0] * (2 ** 16)
     cov_virgin_bits = [0] * (2 ** 16)
 
     i = 0
     idx_to_id[name] = {}
     idx_to_time[name] = {}
     for f in sorted(iterate_files(queue_dir)):
-        print(name, f)
+        #print(name, f)
         id, src, time = parse_filename(f)
         sec = time // 1000
         idx_to_id[name][i] = id
         idx_to_time[name][i] = sec
         i += 1
-        run_showmap(f, cmd)
-        bitmap, new_bits, interesting = merge_showmap(virgin_bits)
+        #run_showmap(f, cmd)
+        #bitmap, new_bits, interesting = merge_showmap(virgin_bits)
         #if interesting:
         graph[name] = graph.get(name, {})
         graph[name][id] = graph[name].get(id, [])
@@ -128,11 +128,12 @@ for fuzzer in conf:
                 graph[name] = graph.get(name, {})
                 graph[name][srcid] = graph[name].get(srcid, [])
                 graph[name][srcid] += [id]
-        cov_new_bits = new_bits
-        if conf[0]['name'] != name:
-            print(conf[0]['name'], f)
-            run_showmap(f, conf[0]['cmd'])
-            bitmap, cov_new_bits, _ = merge_showmap(cov_virgin_bits)
+                graph[name][srcid] = list(set(graph[name][srcid]))
+        #cov_new_bits = new_bits
+        #if conf[0]['name'] != name:
+        print(conf[0]['name'], f)
+        run_showmap(f, conf[0]['cmd'])
+        bitmap, cov_new_bits, _ = merge_showmap(cov_virgin_bits)
         if cov_new_bits:
             coverage_over_time[sec] = coverage_over_time.get(sec, {})
             coverage_over_time[sec][name] = coverage_over_time[sec].get(name, 0)
@@ -141,14 +142,14 @@ for fuzzer in conf:
         testcases[name] = testcases.get(name, {})
         testcases[name][id] = testcases[name].get(id, {})
         testcases[name][id]['time'] = sec
-        testcases[name][id]['interesting'] = interesting
-        testcases[name][id]['new_bits'] = new_bits
+        #testcases[name][id]['interesting'] = interesting
+        #testcases[name][id]['new_bits'] = new_bits
         testcases[name][id]['cross'] = testcases[name][id].get('cross', [])
 
     for fuzzer2 in conf:
         if name == fuzzer2['name']: continue
         
-        queue_dir = fuzzer2["corpus"]
+        #queue_dir = fuzzer2["corpus"]
         virgin_bits = [0] * (2 ** 16)
 
         for f in sorted(iterate_files(queue_dir)):
@@ -157,10 +158,8 @@ for fuzzer in conf:
             run_showmap(f, cmd)
             _, new_bits, interesting = merge_showmap(virgin_bits)
             if interesting:
-                testcases[fuzzer2['name']] = testcases.get(fuzzer2['name'], {})
-                testcases[fuzzer2['name']][id] = testcases[fuzzer2['name']].get(id, {})
-                testcases[fuzzer2['name']][id]['cross'] = testcases[fuzzer2['name']][id].get('cross', [])
-                testcases[fuzzer2['name']][id]['cross'].append(name)
+                testcases[name][id]['cross'] = testcases[name][id].get('cross', [])
+                testcases[name][id]['cross'].append(fuzzer2['name'])
 
     plen = len(all_bitmaps)
     all_bitmaps += bitmaps
