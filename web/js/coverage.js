@@ -28,10 +28,10 @@ d3.csv("http://0.0.0.0:8888/data/coverage.csv", function(data) {
     .append("svg")
       .attr("width", rect.width)
       .attr("height", rect.height)
+      .call(d3.zoom().on("zoom", zoom))
     .append("g")
       .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
-
 
   var ptsize = 1.5
 
@@ -53,21 +53,41 @@ d3.csv("http://0.0.0.0:8888/data/coverage.csv", function(data) {
   var x = d3.scaleLinear()
     .domain([xmin, xmax])
     .range([ 0, width ]);
+  var xxAxis = d3.axisBottom(x);
   var xAxis = svg.append("g")
     .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x));
+    .call(xxAxis);
 
   // Add Y axis
   var y = d3.scaleLinear()
     .domain([ymin, ymax])
     .range([ height, 0 ]);
-    
+  var yyAxis = d3.axisLeft(y).ticks(5).tickFormat(d3.format("d"));
   var yAxis = svg.append("g")
-    .call(d3.axisLeft(y).ticks(5).tickFormat(d3.format("d")));
-  
+    .call(yyAxis);
+
+  function zoom() {
+
+    // re-scale y axis during zoom; ref [2]
+    yAxis.transition()
+          .duration(50)
+          .call(yyAxis.scale(d3.event.transform.rescaleY(y)));
+
+    // re-draw circles using new y-axis scale; ref [3]
+    var newy = d3.event.transform.rescaleY(y);
+    graph
+        .attr("d", function(d){
+          return d3.line()
+            .x(function(d) { return x(+d.TIME); })
+            .y(function(d) { return newy(+d.VAL); })
+            (d.values)
+        })
+  }
+
+
   var lines = {}
   
-  svg.selectAll(".line")
+  var graph = svg.selectAll(".line")
       .data(sumstat)
       .enter()
       .append("path")

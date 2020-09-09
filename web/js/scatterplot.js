@@ -41,21 +41,38 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
   
   const colorScale = d3.scaleOrdinal()
         .range(d3.schemeCategory10);
+
+  
   
   // Add X axis
   var x = d3.scaleLinear()
     .domain([ xmin, xmax ])
     .range([ 0, width ]);
+  var xAxis = d3.axisBottom(x);
   svg.append("g")
     .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x));
+    .call(xAxis);
 
   // Add Y axis
   var y = d3.scaleLinear()
     .domain([ ymin, ymax ])
     .range([ height, 0]);
+  var yAxis = d3.axisLeft(y);
   svg.append("g")
-    .call(d3.axisLeft(y));
+    .call(yAxis);
+
+  var zoom = d3.zoom()
+    .scaleExtent([1, 40])
+    .translateExtent([[-100, -100], [width + 90, height + 100]])
+    .on("zoom", zoomed);
+
+  //svg.call(zoom);
+
+  function zoomed() {
+    svg.attr("transform", d3.event.transform);
+    x.call(xAxis.scale(d3.event.transform.rescaleX(x)));
+    y.call(yAxis.scale(d3.event.transform.rescaleY(y)));
+  }
 
   // Add dots
   var circles = svg.append('g')
