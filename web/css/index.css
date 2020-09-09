@@ -42,7 +42,9 @@ html, body {
   width: 100%;
   min-height: calc(60% - 50px);
   height: calc(60% - 50px);
-  /*border: 2px solid gray;*/
+  border: 2px solid gray;
+  margin-right: 20px;
+  margin-bottom: 10px;
 }
 
 #coverage {
@@ -50,7 +52,10 @@ html, body {
   width: 100%;
   min-height: calc(20% - 0px);
   height: calc(20% - 0px);
-  /*border: 2px solid gray;*/
+  border: 2px solid gray;
+  margin-right: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 #inputs {
@@ -58,6 +63,9 @@ html, body {
   width: 100%;
   min-height: calc(20% - 0px);
   height: calc(20% - 0px);
+  border: 2px solid gray;
+  margin-right: 20px;
+  margin-top: 10px;
 }
 
 #legend {
@@ -87,14 +95,21 @@ html, body {
   width: 100%;
   min-height: calc(100% - 100px - 40px - 40px - 40px - 10px);
   height: calc(100% - 100px - 40px - 40px - 40px - 10px);
+  border: 2px solid gray;
+  margin-left: 20px;
 }
 
 #timeline {
   width: calc(100% - 20px);
   min-height: calc(100px - 20px);
-  height: calc(100px - 20px);
+  /*height: calc(100px - 20px);*/
   margin: 10px;
-  /*border: 2px solid gray;*/
+}
+
+.two_bottom {
+  border: 2px solid gray;
+  margin-left: 20px;
+  margin-top: 10px;
 }
 
 
