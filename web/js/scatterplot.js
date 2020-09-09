@@ -22,6 +22,12 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
   var margin = {top: 10, right: 20, bottom: 30, left: 40},
       width = rect.width - margin.left - margin.right,
       height = rect.height - margin.top - margin.bottom;
+
+  // Pan and zoom
+  var zoom = d3.zoom()
+    .scaleExtent([.5, 20])
+    .extent([[0, 0], [width, height]])
+    .on("zoom", zoomed);
   
   var svg = d3.select("#scatterplot")
     .append("svg")
@@ -29,7 +35,8 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
       .attr("height", rect.height)
     .append("g")
       .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
+            "translate(" + margin.left + "," + margin.top + ")")
+      .call(zoom);
 
   var ptsize = 2
 
@@ -49,7 +56,7 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
     .domain([ xmin, xmax ])
     .range([ 0, width ]);
   var xAxis = d3.axisBottom(x);
-  svg.append("g")
+  var gX = svg.append("g")
     .attr("transform", "translate(0," + height + ")")
     .call(xAxis);
 
@@ -58,7 +65,7 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
     .domain([ ymin, ymax ])
     .range([ height, 0]);
   var yAxis = d3.axisLeft(y);
-  svg.append("g")
+  var gY = svg.append("g")
     .call(yAxis);
 
   var zoom = d3.zoom()
@@ -66,12 +73,17 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
     .translateExtent([[-100, -100], [width + 90, height + 100]])
     .on("zoom", zoomed);
 
-  //svg.call(zoom);
 
   function zoomed() {
-    svg.attr("transform", d3.event.transform);
-    x.call(xAxis.scale(d3.event.transform.rescaleX(x)));
-    y.call(yAxis.scale(d3.event.transform.rescaleY(y)));
+    // create new scale ojects based on event
+        var new_xScale = d3.event.transform.rescaleX(x);
+        var new_yScale = d3.event.transform.rescaleY(y);
+    // update axes
+        gX.call(xAxis.scale(new_xScale));
+        gY.call(yAxis.scale(new_yScale));
+        circles.data(data)
+         .attr('cx', function(d) {return new_xScale(d.X)})
+         .attr('cy', function(d) {return new_yScale(d.Y)});
   }
 
   // Add dots
