@@ -249,14 +249,17 @@ When a testcase is selected in the scatterplot, the border of the corresponding 
 
 \subsection{Analyst Feedback}
 
-The insights that an analyst can retrieve using the visualization are, but not limited to, the following:
+The insights that an analyst can retrieve in order to choose or tune the fuzzers using the visualization are, but not limited to, the following:
 
 \begin{itemize}
-\item looking just at the scatterplot, the user can select a subset of fuzzers that explore different program points if the points related to eahc fuzzer in the graphs are clustered;
- 
+\item looking just at the scatterplot, the user can select a subset of fuzzers that explore different program points if the points related to each fuzzer in the graphs are clustered;
+\item looking at the scatterplot and the coverage graph, the user can select a cluster of testcases that are similar and see the ability of a fuzzer in generating similar testcases in a small range of time. A fuzzer that discovers few points at time and have them distributed for all the X axis of the coverage plot should be deprioritized;
+\item looking at the coverage graph, when there is a huge increment of the number of edges, the user can see if an outlier in the scatterplot was generated. This allow to isolate interesting testcases that improves a lot the coverage;
+\item selecting testcases in the graph, the user can see if the testcases are similar in the scatterplot in order to understand the ability of the mutator to generate similar or different derived inputs;
+\item selecting testcases in the graph and a fuzzer to cross compare, the user can know if the coverage metric of the other fuzzer is sensitive enougth to cover the selected testcases.
 \end{itemize}
 
-\subsection{Choosing and Tuning Fuzzers}
+%\subsection{Choosing and Tuning Fuzzers}
 
 \section{Implementation}
 
@@ -265,65 +268,6 @@ The insights that an analyst can retrieve using the visualization are, but not l
 
 
 
-
-
-\iffalse
-\section{Proposal}
-
-We propose a time-based visualization of the progress of different techniques based on {\sc AFL++}.
-
-The first view will be a {\em navigable levels tree}. The user can select the technique in a scrollbar and view the associated tree.
-
-Each node of the tree can be selected to view if it can be considered an interesting input for another technique. This will help in understanding the insight 3, were a tecnhique rech a program points thanks to an intermediate input that another technqiue cannot see as interesting.
-
-There will be also a {\em scatterplot representing the inputs} in terms of covered state.
-We collect the hitcounts vector of each input, reduce the dimensionality using PCA and then apply t-SNE on the vector with reduced dimensions to preserve outliners in these most important dimensions.
-
-The color of each point will be related to the technique that generated the input.
-
-In this scatterplot, the user can manually select a cluster of points that represents inputs with related paths.
-
-Of course it can choose to consider only a subset of the techniques and hide that points from the view.
-
-Doing that, will help to cope the insight number 1 looking at the density of the cluster for each different technique.
-
-When doing this, the user can then choose to highlight in the scatterplot the inputs that are parents for the points in the cluster.
-
-A technque that is able to generate inputs from other that are almost completely unrelated have a better mutational algorithm than a technqiue that generate inputs similar to the parents, this helps the analyst with insight number 2.
-
-The tree an the scatterplot are synchronized. When a cluster is selected, the corresponding inputs are highlighted in the tree.
-
-All these points can be hidden using a {\em time bar}. Selecting a specific lapse of time, only inputs founds by the fuzzer before that time are considered.
-
-The other two views, related to the evolution in time, are the {\em coverage over time graph} and the {\em new interesting inputs per seconds graph}.
-
-When a testcase is selected (both in the scatterplot or in the tree) a line appears in these graphs highlighing the time in which the testcase was discovered.
-
-Coverage over time shows when an input that is important in terms of new coverage is found and so suggest the user where it should put the time bar for a targeted analysis.
-
-Inputs per seconds is related with the levels tree. If a fuzzer generates too many intermediate testcases it can saturate the evolution of the alogrithm, so if we select an intermediate input in the levels tree and see an peak in this graph likely the technique suffers from path explosion.
-
-In order to give an idea about dimensionality, we pick pcre2 version 183 (SVN) as example PUT. We compiled it with the AFL++ compiler wrapper and the addition of AddressSanitizer and UndefinedBehaviourSanitizer. After 12 hours of fuzzing, we got 14853 generated inputs in the fuzzer queue.
-
-As said before, the hitcounts vector has 65536 dimensions, so in this simple case we have 973406208 elements.
-
-\section{Usage}
-
-An analyst that wants to compare different Fuzzing techniques on a target program will do the following:
-
-\begin{enumerate}
-\item Run the fuzzers (one for each technique) for the same amount time (more than 12h is recommended);
-\item Use the tool to process the data from the fuzzing campaigns;
-\item Use the visual analytics part of the tool to understand which subset of techniques are effective;
-\item Restart the fuzzing campaign assigning computational power to only the chosen techniques;
-\item The behavior of fuzzers in a long time can saturate, maybe retry from step 2 to reduce again the set of techniques.
-\end{enumerate}
-
-Saturation of fuzzer is a problem that was rarely addressed in academic literature but that affects each type of Feedback-driven Fuzzer \cite{saturation}.
-Fuzzing campaigns can last months, or never ends, like for OSS-Fuzz \cite{serebryany2017oss}, the continuous fuzzing service for OSS software by Google, and a tool that can guide towards the selection of techniques that avoid saturation can help a lot the campaign.
-
-Saturation is only one of the problems that can be addressed with {\sc FuzzSplore}, but it is the problem that makes multiple uses of the tool during the campaign necessary.
-\fi
 
 \bibliographystyle{IEEEtran}
 \bibliography{bibliography}
