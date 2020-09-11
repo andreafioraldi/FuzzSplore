@@ -440,8 +440,13 @@ function render_network(fuzzer) {
       }
 
 
+      var ticknum = 0
+
       //tick handler
       function ticked() {
+
+        ticknum++
+        if (ticknum > 200) force.simulation.alphaTarget(0.0);
 
         // set links position
         links.attr("x1", function (d) { return d.source.x; })
