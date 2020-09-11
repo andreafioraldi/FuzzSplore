@@ -1,0 +1,12 @@
+[
+  {
+    "name": "classic",
+    "corpus": "/home/andrea/Desktop/tcpfuzz/CLASSIC/queue",
+    "cmd": ["/home/andrea/Desktop/tcpfuzz/tcpdump_classic", "-nr", "@@"]
+  },
+  {
+    "name": "laf",
+    "corpus": "/home/andrea/Desktop/tcpfuzz/LAF/queue",
+    "cmd": ["/home/andrea/Desktop/tcpfuzz/tcpdump_laf", "-nr", "@@"]
+  }
+]

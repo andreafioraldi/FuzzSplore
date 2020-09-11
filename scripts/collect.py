@@ -112,6 +112,8 @@ for fuzzer in conf:
         #print(name, f)
         id, src, time = parse_filename(f)
         sec = time // 1000
+        if sec > 100: continue
+        
         idx_to_id[name][i] = id
         idx_to_time[name][i] = sec
         i += 1
@@ -129,6 +131,7 @@ for fuzzer in conf:
                 graph[name][srcid] = graph[name].get(srcid, [])
                 graph[name][srcid] += [id]
                 graph[name][srcid] = list(set(graph[name][srcid]))
+                break
         #cov_new_bits = new_bits
         #if conf[0]['name'] != name:
         print(conf[0]['name'], f)
@@ -155,9 +158,11 @@ for fuzzer in conf:
         for f in sorted(iterate_files(queue_dir)):
             print(name, f)
             id, src, time = parse_filename(f)
+            if sec > 100: continue
+
             run_showmap(f, cmd)
             _, new_bits, interesting = merge_showmap(virgin_bits)
-            if interesting:
+            if interesting and id in testcases[name]:
                 testcases[name][id]['cross'] = testcases[name][id].get('cross', [])
                 testcases[name][id]['cross'].append(fuzzer2['name'])
 
