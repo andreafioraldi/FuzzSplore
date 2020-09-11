@@ -73,17 +73,17 @@ d3.csv("http://0.0.0.0:8888/data/coverage.csv", function(data) {
     //      .duration(50)
     //      .call(yyAxis.scale(d3.event.transform.rescaleY(y)));
 
-    xAxis.transition()
-          .duration(50)
-          .call(xxAxis.scale(d3.event.transform.rescaleX(x)));
-    // re-draw circles using new y-axis scale; ref [3]
     var newy = d3.event.transform.rescaleY(y);
-    var newx = d3.event.transform.rescaleX(x);
+    newy.domain([ymin, newy.domain()[1]]);
+    yAxis.transition()
+          .duration(50)
+          .call(yyAxis.scale(newy));
+    // re-draw circles using new y-axis scale; ref [3]
     graph
         .attr("d", function(d){
           return d3.line()
-            .x(function(d) { return newx(+d.TIME); })
-            .y(function(d) { return y(+d.VAL); })
+            .x(function(d) { return x(+d.TIME); })
+            .y(function(d) { return newy(+d.VAL); })
             (d.values)
         })
   }
