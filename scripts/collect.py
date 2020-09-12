@@ -156,13 +156,14 @@ for fuzzer in conf:
         virgin_bits = [0] * (2 ** 16)
 
         for f in sorted(iterate_files(queue_dir)):
-            print(name, f)
             id, src, time = parse_filename(f)
+            sec = time // 1000
             if sec > 100: continue
 
-            run_showmap(f, cmd)
+            print('cross', fuzzer2['name'], f)
+            run_showmap(f, fuzzer2['cmd'])
             _, new_bits, interesting = merge_showmap(virgin_bits)
-            if interesting and id in testcases[name]:
+            if interesting:
                 testcases[name][id]['cross'] = testcases[name][id].get('cross', [])
                 testcases[name][id]['cross'].append(fuzzer2['name'])
 
