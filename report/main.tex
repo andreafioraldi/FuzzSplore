@@ -39,7 +39,7 @@
 \IEEEauthorblockA{\textit{1692419}}
 \and
 \IEEEauthorblockN{Luigi Paolo Pileggi}
-\IEEEauthorblockA{\textit{0000000}}
+\IEEEauthorblockA{\textit{1691249}}
 }
 
 \author{\IEEEauthorblockN{Andrea Fioraldi\IEEEauthorrefmark{1}\IEEEauthorrefmark{2},
@@ -263,7 +263,26 @@ The insights that an analyst can retrieve in order to choose or tune the fuzzers
 
 \section{Implementation}
 
+We created an \textsc{html} page comprised of 4 views and a filtering panel and all the components were created using the \textsc{D3.js} library.
+\subsection{Testcase Scatterplot}
 
+We apply \textit{t-SNE} on the dataset and the result is shown on a scatterplot where each category has a color to help the analyst distinguish the similarity in the clusters highlighted and the presence of outliers.
+By brushing over the scatterplot the highlighted elements will also show up and update the other 3 views in order help in finding relations.
+\includegraphics[scale=0.2]{img/scatterplot}
+
+\subsection{Coverage Growth and Testcase Plots}
+The first graph plots the growth over time of the number of covered edges, the latter plots the nubmer of testcases over time instead.
+To better analyse the data we implemented a zoom that keeps the lowest value pinned at the bottom and a feedback for the selected points from the coverage scatterplot or generation graph.
+\includegraphics[scale=0.3]{img/coverage}
+\includegraphics[scale=0.3]{img/inputs}
+
+\subsection{Generation Graph}
+The Generation Graph is created as a hierarchical layout where each data point's value is displayed as a node label. The user can zoom as well as pan over the entire view to have a better understandig of the data and when a node is selected the other graphs are updated.
+\includegraphics[scale=0.2]{img/tree}
+
+\subsection{Filtering Panel}
+The user can filter the data shown an all the 4 views by time, with a range slider located at the bottom right of the page, and by category, by clicking on the category names directly on top of the slider.
+\includegraphics[scale=0.3]{img/panel}
 \section{Conclusion}
 
 
