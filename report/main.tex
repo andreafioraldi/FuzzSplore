@@ -74,7 +74,7 @@ We developed a prototype upon the {\sc AFL++} fuzzing framework, {\sc FuzzSplore
 
 {\em Fuzz Testing} or {\em Fuzzing} is a family of techniques to automatically uncovers bugs in software.
 
-Due to its effectiveness, much more efficient than other software testing techniques like {\it Symbolic Execution} \cite{redqueen} \cite{sebastian}, the research in this field is flourishing and several different techniques were developed to improve fuzz testing, both from academy and industry.
+Due to its effectiveness, much more efficient than other software testing techniques like {\it Symbolic Execution} \cite{redqueen} \cite{sebastian}, the research in this field is flourishing and several different techniques were developed to improve fuzz testing, both from academia and industry.
 
 The evaluation and the comparison of these techniques, however, is a debatable matter \cite{fuzzeval}.
 
@@ -259,6 +259,8 @@ The insights that an analyst can retrieve in order to choose or tune the fuzzers
 \item Selecting testcases in the graph and a fuzzer to cross compare, the user can know if the coverage metric of the other fuzzer is sensitive enougth to cover the selected testcases.
 \end{itemize}
 
+With this information the security researcher should be able to choose and tune the set of fuzzers to avoid the saturation of the fuzzing campaign. This methodology is a first step towards a fuzzers debugger that is highly demanded by the security reseach community.
+
 %\subsection{Choosing and Tuning Fuzzers}
 
 \section{Implementation}
@@ -294,7 +296,7 @@ It defines a long-term visual analytics feedback loop applied to fuzzing with a 
 
 The information that a security researcher can collect using our approach can help in uderstanding the problem of saturation in fuzzing campaigns, a widely spread problem that is rarely addressed in academic literature.
 
-We shared {\sc FuzzSplore} as Free and Open Source Software at \url{https://github.com/andreafioraldi/FuzzSplore}.
+We share {\sc FuzzSplore} as Free and Open Source Software at \url{https://github.com/andreafioraldi/FuzzSplore}.
 
 \bibliographystyle{IEEEtran}
 \bibliography{bibliography}
