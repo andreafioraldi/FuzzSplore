@@ -269,23 +269,38 @@ We created an \textsc{html} page comprised of 4 views and a filtering panel and 
 \subsection{Testcase Scatterplot}
  
 The scatterplot has as both axis a linear scale  where the points are color coded to represent a category to help the analyst distinguish the similarity in the clusters highlighted and the presence of outliers.
-By brushing over the scatterplot an update routine is called to update the other 3 view with the highlighted elements in order help in finding relations.
+By brushing over the scatterplot an update routine is called to update the other 3 views with the highlighted elements by selecting the corresponding nodes in the Generation graph and inserting lines in both plots.
 The user can also zoom in and out which scales appropriately both axis.
-\includegraphics[scale=0.2]{img/scatterplot}
+\begin{figure}[H]
+  \includegraphics[scale=0.2]{img/scatterplot}
+  \label{fig:scatterplot}
+\end{figure}
 
 \subsection{Coverage Growth and Testcase Plots}
 The Coverage graph plots the growth over time of the number of covered edges, the Testcase graph plots the nubmer of testcases over time instead, for both the bottom axis is implemented as a linear scale, for the first graph the left axis is implemented as a logarithmic scale, for the latter a linear scale is used instead.
-We also implemented a zoom that keeps the lowest value pinned at the bottom and a feedback for the selected points from the coverage scatterplot or generation graph.
-\includegraphics[scale=0.3]{img/coverage}
-\includegraphics[scale=0.3]{img/inputs}
+We also implemented a zoom that keeps the lowest value pinned at the bottom the user can also pan.
+\begin{figure}[H]
+  \includegraphics[scale=0.2]{img/coverage}
+  \label{fig:coverage}
+\end{figure}
+\begin{figure}[H]
+  \includegraphics[scale=0.2]{img/inputs}
+  \label{fig:inputs}
+\end{figure}
 
 \subsection{Generation Graph}
-The Generation Graph is created as a hierarchical layout where each data point's value is displayed as a node label. The user can zoom as well as pan over the entire view to have a better understandig of the data and when a node is selected the other graphs are updated.
-\includegraphics[scale=0.2]{img/tree}
+The Generation Graph is created as a hierarchical layout where each data point's value is displayed as a node label. The user can zoom as well as pan over the entire view to have a better understandig of the data and when a node is selected the other a routine is called to highlights the corresponding points in the scatterplot and insert lines in the other plots.
+\begin{figure}[H]
+  \includegraphics[scale=0.2]{img/tree}
+  \label{fig:tree}
+\end{figure}
 
 \subsection{Filtering Panel}
-The user can filter the data shown an all the 4 views by time, with a range slider located at the bottom right of the page, and by category, by clicking on the category names directly on top of the slider.
-\includegraphics[scale=0.3]{img/panel}
+The user can filter the data shown an all the 4 views by time, with a range slider located at the bottom right of the page, and by category, by clicking on the category names directly on top of the slider, the filtering works by updating the existing graphs without redrawing.
+\begin{figure}[H]
+  \includegraphics[scale=0.2]{img/panel}
+  \label{fig:panel}
+\end{figure}
 
 
 
