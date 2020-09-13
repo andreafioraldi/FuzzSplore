@@ -59,7 +59,7 @@ d3.csv("http://0.0.0.0:8888/data/coverage.csv", function(data) {
     .call(xxAxis);
 
   // Add Y axis
-  var y = d3.scaleLinear()
+  var y = d3.scaleLog()
     .domain([ymin, ymax])
     .range([ height, 0 ]);
   var yyAxis = d3.axisLeft(y).ticks(5).tickFormat(d3.format("d"));

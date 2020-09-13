@@ -265,14 +265,15 @@ The insights that an analyst can retrieve in order to choose or tune the fuzzers
 
 We created an \textsc{html} page comprised of 4 views and a filtering panel and all the components were created using the \textsc{D3.js} library.
 \subsection{Testcase Scatterplot}
-
-We apply \textit{t-SNE} on the dataset and the result is shown on a scatterplot where each category has a color to help the analyst distinguish the similarity in the clusters highlighted and the presence of outliers.
-By brushing over the scatterplot the highlighted elements will also show up and update the other 3 views in order help in finding relations.
+ 
+The scatterplot has as both axis a linear scale  where the points are color coded to represent a category to help the analyst distinguish the similarity in the clusters highlighted and the presence of outliers.
+By brushing over the scatterplot an update routine is called to update the other 3 view with the highlighted elements in order help in finding relations.
+The user can also zoom in and out which scales appropriately both axis.
 \includegraphics[scale=0.2]{img/scatterplot}
 
 \subsection{Coverage Growth and Testcase Plots}
-The first graph plots the growth over time of the number of covered edges, the latter plots the nubmer of testcases over time instead.
-To better analyse the data we implemented a zoom that keeps the lowest value pinned at the bottom and a feedback for the selected points from the coverage scatterplot or generation graph.
+The Coverage graph plots the growth over time of the number of covered edges, the Testcase graph plots the nubmer of testcases over time instead, for both the bottom axis is implemented as a linear scale, for the first graph the left axis is implemented as a logarithmic scale, for the latter a linear scale is used instead.
+We also implemented a zoom that keeps the lowest value pinned at the bottom and a feedback for the selected points from the coverage scatterplot or generation graph.
 \includegraphics[scale=0.3]{img/coverage}
 \includegraphics[scale=0.3]{img/inputs}
 
