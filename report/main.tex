@@ -268,7 +268,7 @@ With this information the security researcher should be able to choose and tune 
 We created an \textsc{html} page comprised of 4 views and a filtering panel and all the components were created using the \textsc{D3.js} library.
 \subsection{Testcase Scatterplot}
  
-The scatterplot has as both axis a linear scale  where the points are color coded to represent a category to help the analyst distinguish the similarity in the clusters highlighted and the presence of outliers.
+The scatterplot has as both axis a linear scale where the points are color-coded to represent a category to help the analyst distinguish the similarity in the clusters highlighted and the presence of outliers.
 By brushing over the scatterplot an update routine is called to update the other 3 views with the highlighted elements by selecting the corresponding nodes in the Generation graph and inserting lines in both plots.
 The user can also zoom in and out which scales appropriately both axis.
 \begin{figure}[H]
@@ -277,7 +277,7 @@ The user can also zoom in and out which scales appropriately both axis.
 \end{figure}
 
 \subsection{Coverage Growth and Testcase Plots}
-The Coverage graph plots the growth over time of the number of covered edges, the Testcase graph plots the nubmer of testcases over time instead, for both the bottom axis is implemented as a linear scale, for the first graph the left axis is implemented as a logarithmic scale, for the latter a linear scale is used instead.
+The Coverage graph plots the growth over time of the number of covered edges, the Testcase graph plots the number of test cases over time instead, for both the bottom axis is implemented as a linear scale, for the first graph the left axis is implemented as a logarithmic scale, for the latter a linear scale is used instead.
 We also implemented a zoom that keeps the lowest value pinned at the bottom the user can also pan.
 \begin{figure}[H]
   \includegraphics[scale=0.2]{img/coverage}
@@ -289,7 +289,7 @@ We also implemented a zoom that keeps the lowest value pinned at the bottom the 
 \end{figure}
 
 \subsection{Generation Graph}
-The Generation Graph is created as a hierarchical layout where each data point's value is displayed as a node label. The user can zoom as well as pan over the entire view to have a better understandig of the data and when a node is selected the other a routine is called to highlights the corresponding points in the scatterplot and insert lines in the other plots.
+The Generation Graph is created as a hierarchical layout where each data point's value is displayed as a node label. The user can zoom as well as pan over the entire view to have a better understanding of the data and when a node is selected the other a routine is called to highlights the corresponding points in the scatterplot and insert lines in the other plots.
 \begin{figure}[H]
   \includegraphics[scale=0.2]{img/tree}
   \label{fig:tree}
