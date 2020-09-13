@@ -38,21 +38,21 @@ html, body {
 
 #scatterplot {
   float: left;
-  width: 100%;
+  width: 99%;
   min-height: calc(60% - 50px);
   height: calc(60% - 50px);
 }
 
 #coverage {
   float: left;
-  width: 100%;
+  width: 99%;
   min-height: calc(20% - 0px);
   height: calc(20% - 0px);
 }
 
 #inputs {
   float: left;
-  width: 100%;
+  width: 99%;
   min-height: calc(20% - 0px);
   height: calc(20% - 0px);
 }
@@ -92,9 +92,9 @@ html, body {
   margin: 10px;
 }
 
-.two_bottom {
-  margin-left: 20px;
-  margin-top: 10px;
+.d3view {
+  border: 1px solid grey;
+  margin: 1px;
 }
 
 
