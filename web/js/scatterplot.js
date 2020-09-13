@@ -112,7 +112,7 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
 
   svg_legend
     .selectAll("myLegend")
-    .data(['Graphs filter:'].concat(fuzzers))
+    .data([' Plots filter:'].concat(fuzzers))
     .enter()
       .append('g')
       .append("text")
@@ -125,12 +125,12 @@ d3.csv("http://0.0.0.0:8888/data/vectors.csv", function(data) {
         })
         .attr('y', 30)
         .text(function(d) { return d; })
-        .style("fill", function(d){ if (d == 'Graphs filter:') return 'black'; return colorScale(d); })
+        .style("fill", function(d){ if (d == ' Plots filter:') return 'black'; return colorScale(d); })
         .style("font-size", 15)
         .attr('class', 'legend_item')
-        .attr("font-weight", function(d,i) { if (d !== 'Graphs filter:') return 'bold'; else 'normal';})
+        .attr("font-weight", function(d,i) { if (d !== ' Plots filter:') return 'bold'; else 'normal';})
       .on("click", function(fuzz){
-        if (fuzz == 'Graphs filter:') return
+        if (fuzz == ' Plots filter:') return
         
         var sel = circles.filter(function(d){return d.NAME == fuzz})
         var curop = sel.style("opacity")

@@ -104,7 +104,7 @@ d3.json('http://0.0.0.0:8888/data/graphs.json', data => {
 
   svg_curtree
     .selectAll("curTreeSelector")
-    .data([' Current tree:'].concat(Object.keys(data)))
+    .data(['Current graph:'].concat(Object.keys(data)))
     .enter()
       .append('g')
       .append("text")
@@ -117,12 +117,12 @@ d3.json('http://0.0.0.0:8888/data/graphs.json', data => {
         })
         .attr('y', 30)
         .text(function(d) { return d; })
-        .style("fill", function(d){ if (d == ' Current tree:') return 'black'; return colorScale(d); })
+        .style("fill", function(d){ if (d == 'Current graph:') return 'black'; return colorScale(d); })
         .style("font-size", 15)
         .attr('class', 'tree_sel')
-        //.attr("font-weight", function(d,i) { if (d !== ' Current tree:') return 'bold'; else 'normal';})
+        //.attr("font-weight", function(d,i) { if (d !== 'Current graph:') return 'bold'; else 'normal';})
       .on("click", function(fuzz){
-        if (fuzz == ' Current tree:') return
+        if (fuzz == 'Current graph:') return
         select_a_tree(fuzz)
       })
     
@@ -446,7 +446,11 @@ function render_network(fuzzer) {
       function ticked() {
 
         ticknum++
-        if (ticknum > 200) force.simulation.alphaTarget(0.0);
+        if (ticknum > 100) {
+          //force.simulation.alphaTarget(0.0);
+          force.simulation.stop()
+          console.log("Stop moving force")
+        }
 
         // set links position
         links.attr("x1", function (d) { return d.source.x; })
@@ -461,6 +465,10 @@ function render_network(fuzzer) {
       //handler drag start event
       function dragstarted(d) {
 
+        console.log("Drag node " + d)
+        
+        force.simulation.restart()
+
         //disable node fixing
         nodes.each(d => { d.fx = null; d.fy = null })
       }
@@ -473,6 +481,14 @@ function render_network(fuzzer) {
         d.fx = d3.event.x;
         d.fy = d3.event.y;
 
+        // set links position
+        links.attr("x1", function (d) { return d.source.x; })
+          .attr("y1", function (d) { return d.source.y; })
+          .attr("x2", function (d) { return d.target.x; })
+          .attr("y2", function (d) { return d.target.y; });
+
+        //set nodes position
+        svg.selectAll('.node').attr("transform", function (d) { return `translate(${d.x},${d.y}) scale(${1 / (attrs.lastTransform ? attrs.lastTransform.k : 1)})`; });
        
       }
 
@@ -481,6 +497,22 @@ function render_network(fuzzer) {
       //-------------------- handle drag end event ---------------
       function dragended(d) {
         // we are doing nothing, here , aren't we? 
+        
+        d.fixed = true
+        
+        // set links position
+        links.attr("x1", function (d) { return d.source.x; })
+          .attr("y1", function (d) { return d.source.y; })
+          .attr("x2", function (d) { return d.target.x; })
+          .attr("y2", function (d) { return d.target.y; });
+
+        //set nodes position
+        svg.selectAll('.node').attr("transform", function (d) { return `translate(${d.x},${d.y}) scale(${1 / (attrs.lastTransform ? attrs.lastTransform.k : 1)})`; });
+        
+        console.log("Drag end node " + d)
+        
+        ticknum = 0
+        
       }
 
       //-------------------------- node mouse hover handler ---------------
@@ -534,6 +566,8 @@ function render_network(fuzzer) {
       // --------------- handle node click event ---------------
       function nodeClick(d) {
       
+        console.log("Click node " + d)
+        
         //free fixed nodes
         nodes.each(d => { d.fx = null; d.fy = null })
         
