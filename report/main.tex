@@ -266,39 +266,56 @@ With this information the security researcher should be able to choose and tune 
 \section{Implementation}
 
 We created an \textsc{html} page comprised of 4 views and a filtering panel and all the components were created using the \textsc{D3.js} library.
-\subsection{Testcase Scatterplot}
+
+\subsection{Testcases Scatterplot}
  
-The scatterplot has, as both axes, a linear scale where the points are color-coded to represent a category to help the analyst distinguish the similarity in the clusters highlighted and the presence of outliers.\par
+The scatterplot (Fig. \ref{fig:scatterplot}) has, as both axes, a linear scale where the points are color-coded to represent a category to help the analyst distinguish the similarity in the clusters highlighted and the presence of outliers.\par
 By brushing over the scatterplot a routine is called to update the other 3 views with the highlighted elements by selecting the corresponding nodes in the Generation graph and inserting lines in both plots.\par
 The user can also zoom in and out and both axes are scaled appropriately.
-\begin{figure}[H]
+
+\begin{figure}[h]
   \includegraphics[scale=0.25]{img/scatterplot}
+  \centering
+  \caption{Testcases scatterplot}
   \label{fig:scatterplot}
 \end{figure}
 
-\subsection{Coverage Growth and Testcase Plots}
-The Coverage graph plots the growth over time of the number of covered edges, the Testcase graph plots the number of test cases over time instead, for both the bottom axis is implemented as a linear scale, for the first graph the left axis is implemented as a logarithmic scale, for the latter a linear scale is used instead.\par
+\subsection{Coverage Growth and Interesting Testcases Plots}
+
+The Coverage graph (Fig. \ref{fig:coverage}) plots the growth over time of the number of covered edges, the Interesting Testcase graph (Fig. \ref{fig:inputs}) plots the number of new interesting test cases over time instead, for both the bottom axis is implemented as a linear scale, for the first graph the left axis is implemented as a logarithmic scale, for the latter a linear scale is used instead.\par
 When data is selected on the scatterplot or graph vertical lines appear in both plots at the corresponding time having the stroke color matching the fuzzing technique.\par
 We also implemented a pan and zoom functionality that keeps the lowest value pinned at the bottom.
-\begin{figure}[H]
+
+\begin{figure}[h]
   \includegraphics[scale=0.25]{img/coverage}
+  \centering
+  \caption{Coverage growth plot}
   \label{fig:coverage}
   \includegraphics[scale=0.25]{img/inputs}
+  \centering
+  \caption{Interesting Testcases plot}
   \label{fig:inputs}
 \end{figure}
 
 \subsection{Generation Graph}
-The Generation Graph is created as a hierarchical layout where each data point's value is displayed as a node label.\par
+The Generation Graph (Fig. \ref{fig:tree})  is created as a hierarchical layout where each data point's value is displayed as a node label.\par
 The user can zoom as well as pan over the entire view to have a better understanding of the data and when a node is selected the other a routine is called to highlights the corresponding points in the scatterplot and insert lines in the other plots.
+A mouseover on a node lowlights all the nodes except the hovered nodes and its neighbours nodes and edges.
+
 \begin{figure}[H]
   \includegraphics[scale=0.25]{img/tree}
+  \centering
+  \caption{Generation graph}
   \label{fig:tree}
 \end{figure}
 
 \subsection{Filtering Panel}
-The user can filter the data shown an all the 4 views by time, with a range slider located at the bottom right of the page, and by category, by clicking on the category names directly on top of the slider, the filtering works by updating the existing graphs without redrawing.
-\begin{figure}[H]
+The user can filter the data shown an all the 4 views by time, with a range slider (Fig. \ref{fig:panel}) located at the bottom right of the page, and by category, by clicking on the category names directly on top of the slider, the filtering works by updating the existing graphs without redrawing.
+
+\begin{figure}[h]
   \includegraphics[scale=0.25]{img/panel}
+  \centering
+  \caption{Filtering panel}
   \label{fig:panel}
 \end{figure}
 
@@ -311,6 +328,8 @@ It defines a long-term visual analytics feedback loop applied to fuzzing with a 
 The information that a security researcher can collect using our approach can help in uderstanding the problem of saturation in fuzzing campaigns, a widely spread problem that is rarely addressed in academic literature.
 
 We share {\sc FuzzSplore} as Free and Open Source Software at \url{https://github.com/andreafioraldi/FuzzSplore}.
+
+\vspace{10mm}
 
 \bibliographystyle{IEEEtran}
 \bibliography{bibliography}
