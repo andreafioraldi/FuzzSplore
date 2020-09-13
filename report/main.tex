@@ -252,11 +252,11 @@ When a testcase is selected in the scatterplot, the border of the corresponding 
 The insights that an analyst can retrieve in order to choose or tune the fuzzers using the visualization are, but not limited to, the following:
 
 \begin{itemize}
-\item looking just at the scatterplot, the user can select a subset of fuzzers that explore different program points if the points related to each fuzzer in the graphs are clustered;
-\item looking at the scatterplot and the coverage graph, the user can select a cluster of testcases that are similar and see the ability of a fuzzer in generating similar testcases in a small range of time. A fuzzer that discovers few points at time and have them distributed for all the X axis of the coverage plot should be deprioritized;
-\item looking at the coverage graph, when there is a huge increment of the number of edges, the user can see if an outlier in the scatterplot was generated. This allow to isolate interesting testcases that improves a lot the coverage;
-\item selecting testcases in the graph, the user can see if the testcases are similar in the scatterplot in order to understand the ability of the mutator to generate similar or different derived inputs;
-\item selecting testcases in the graph and a fuzzer to cross compare, the user can know if the coverage metric of the other fuzzer is sensitive enougth to cover the selected testcases.
+\item Looking just at the scatterplot, the user can select a subset of fuzzers that explore different program points if the points related to each fuzzer in the graphs are clustered;
+\item Looking at the scatterplot and the coverage graph, the user can select a cluster of testcases that are similar and see the ability of a fuzzer in generating similar testcases in a small range of time. A fuzzer that discovers few points at time and have them distributed for all the X axis of the coverage plot should be deprioritized;
+\item Looking at the coverage graph, when there is a huge increment of the number of edges, the user can see if an outlier in the scatterplot was generated. This allow to isolate interesting testcases that improves a lot the coverage;
+\item Selecting testcases in the graph, the user can see if the testcases are similar in the scatterplot in order to understand the ability of the mutator to generate similar or different derived inputs;
+\item Selecting testcases in the graph and a fuzzer to cross compare, the user can know if the coverage metric of the other fuzzer is sensitive enougth to cover the selected testcases.
 \end{itemize}
 
 %\subsection{Choosing and Tuning Fuzzers}
@@ -283,10 +283,18 @@ The Generation Graph is created as a hierarchical layout where each data point's
 \subsection{Filtering Panel}
 The user can filter the data shown an all the 4 views by time, with a range slider located at the bottom right of the page, and by category, by clicking on the category names directly on top of the slider.
 \includegraphics[scale=0.3]{img/panel}
-\section{Conclusion}
 
 
 
+\section{Concluding Remarks}
+
+{\sc FuzzSplore} brings an useful visualization-based method to retrieve insights from running fuzzers in a campaign. 
+
+It defines a long-term visual analytics feedback loop applied to fuzzing with a set of data retrieval and visualization techniques that can be easily extended in future works. 
+
+The information that a security researcher can collect using our approach can help in uderstanding the problem of saturation in fuzzing campaigns, a widely spread problem that is rarely addressed in academic literature.
+
+We shared {\sc FuzzSplore} as Free and Open Source Software at \url{https://github.com/andreafioraldi/FuzzSplore}.
 
 \bibliographystyle{IEEEtran}
 \bibliography{bibliography}
