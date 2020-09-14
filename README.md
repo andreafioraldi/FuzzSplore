@@ -1,10 +1,10 @@
-# FuzzSplore
-
-FuzzSplore: Visualizing Feedback-Driven Fuzzing Techniques
+# FuzzSplore: Visualizing Feedback-Driven Fuzzing Techniques
 
 Project for the Visual Analytics exam, Sapienza University of Rome, 2020
 
-Run with:
+Authors: Andrea Fioraldi and Luigi Paolo Pileggi
+
+### How to run
 
 ```
 cd web
