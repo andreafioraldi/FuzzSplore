@@ -66,7 +66,7 @@ gigimail@gigi.com\\
 \begin{abstract}
 Fuzz Testing techniques are the state of the art in software testing for security issues nowadays.
 Their great effectiveness attracted the attention of researchers and hackers and involved them in developing a lot of new techniques to improve Fuzz Testing.
-The evaluation and the cross-comparison of these technique is an almost open problem. In this paper we propose a human-driven approach to this problem based on information visualization.
+The evaluation and the cross-comparison of these techniques is an almost open problem. In this paper, we propose a human-driven approach to this problem based on information visualization.
 We developed a prototype upon the {\sc AFL++} fuzzing framework, {\sc FuzzSplore}, that an analyst can use to get useful insights about different fuzzing configurations applied to a specific target in order to choose or tune the best technique during a fuzzing campaign.
 \end{abstract}
 
@@ -83,17 +83,17 @@ Another widely used metric is found bugs over time, but a bug can be found just 
 
 The data collected using these metrics are often representable using a simple time-based graph that shows the evolution of the fuzzing algorithm.
 
-This approach is useful for an immediate basic comparison between two or more techniques, an analyst have to just see which technique reaches more coverage in less time, but does not reveal the properties of a fuzzer regards specific types of programs states.
+This approach is useful for immediate basic comparison between two or more techniques, an analyst has to just see which technique reaches more coverage in less time but does not reveal the properties of a fuzzer regards specific types of program states.
 
-For instance, a technique can be better than another in exploring some types of program states and in the same time reaching less code coverage.
+For instance, a technique can be better than another in exploring some types of program states and at the same time reaching less code coverage.
 The technique will not cover the bugs in the unexplored code of course, but it may uncover bugs in the program points that it can better explore.
 An example of such technique is the directed fuzzer towards sanitizers violations by \"Osterlund et al. \cite{parmesan}.
 
-The problem of the evaluation of fuzzing techniques is important not only when the aim is to generally states which fuzzer is best, but also when an analyst wants to select the best fuzzers for a single target. It is common that fuzzers that are considered generally better than other on some targets performe worst than the others \cite{aflplusplus}.
+The problem of the evaluation of fuzzing techniques is important not only when the aim is to generally states which fuzzer is best, but also when an analyst wants to select the best fuzzers for a single target. It is common that fuzzers that are considered generally better than others on some targets perform worst than the others \cite{aflplusplus}.
 
 We propose {\sc FuzzSplore}, a tool that allows an analyst to manually explore the evolution of different fuzzing techniques regards a single target program.
 
-The main insight that an user can get using the tool are:
+The main insight that a user can get using the tool are:
 
 \begin{enumerate}
 \item The ability of a fuzzer to generate clusters of inputs that are correlated in terms of covered program points;
@@ -101,18 +101,18 @@ The main insight that an user can get using the tool are:
 \item The ability of a fuzzer to reach program points exploring intermediate inputs that are not an improvement in terms of coverage \cite{besensitive}.
 \end{enumerate}
 
-These insights can drive the user in the choice of the best technique to use for the selected program under test (PUT).
+These insights can drive the user to choose the best technique to use for the selected program under test (PUT).
 
 \section{Background}
 \label{sec:back}
 
-The simplest description of Feedback-driven Fuzzing is an algorithm that provides apparently random data to a computer program and then it watches for crashes or unexpected states and also saves the generated input for later processing if they covers interesting new states in terms of the chosen feedback \cite{fuzzing-book}.
+The simplest description of Feedback-driven Fuzzing is an algorithm that provides apparently random data to a computer program and then it watches for crashes or unexpected states and also saves the generated input for later processing if they cover interesting new states in terms of the chosen feedback \cite{fuzzing-book}.
 
-Tipically, the property of the program used as feedback is the set of the edges in the program Control Flow Graph \cite{compilerbook} in what is the so-called {\it Coverage-guided Fuzzing} (CGF).
+Typically, the property of the program used as feedback is the set of the edges in the program Control Flow Graph \cite{compilerbook} in what is the so-called {\it Coverage-guided Fuzzing} (CGF).
 
 The inputs are mutations of previously saved inputs in the fuzzing loop in Mutational Fuzzing (Figure \ref{fig:cfg}) or generated from scratch from a model in Generational Fuzzing.
 
-We base our implementation on {\sc AFL++} \cite{aflplusplus}, a widely used fuzzer in the recent times, that is a Mutational Coverage Guided Fuzzer.
+We base our implementation on {\sc AFL++} \cite{aflplusplus}, a widely used fuzzer in recent times, that is a Mutational Coverage Guided Fuzzer.
 
 \begin{figure}[H]
 \includegraphics[scale=0.2]{img/cgf}
@@ -121,32 +121,32 @@ We base our implementation on {\sc AFL++} \cite{aflplusplus}, a widely used fuzz
 \label{fig:cfg}
 \end{figure}
 
-State of the art Coverage-Guided Fuzzers encode the approximate executed path in a representation that is easy and fast to process.
+State of the art Coverage-Guided Fuzzers encodes the approximate executed path in a representation that is easy and fast to process.
 {\sc AFL++} uses a vector of 65536 entries by default, the {\it hitcounts} vector.
 
 Each coordinate is associated with an edge and each value represents how many times the edge is executed modulo 256.
 
-When a values greater than the previous one is registered in this vector, the fuzzer consider the input interesting and saves it.
+When a value greater than the previous one is registered in this vector, the fuzzer considers the input interesting and saves it.
 
 Some extensions of CGF save also intermediate inputs that are a superset of the coverage reported in the hitcounts vector, like \cite{lafintel} \cite{ijon} \cite{besensitive}.
 
-In general, when an input is saved, we can associate it to the testcases that generated it by mutation, the {\it parent} testcases. In this way, is easy to construct a graph of generated inputs that represents the progress of the hill climbing algorithm of the fuzzer, the {\it Generations} Graph.
+In general, when an input is saved, we can associate it to the testcases that generated it by mutation, the {\it parent} testcases. In this way, is easy to construct a graph of generated inputs that represents the progress of the hill-climbing algorithm of the fuzzer, the {\it Generations} Graph.
 
 % Looking for parents in this tree, we can evaluate if the intermediate inputs generated by the specific technique is effective.
 
 \section{Methodology}
 
-A {\em fuzzing campaign} is the process of running one or more fuzzers for a long period of time or even continously like in OSS-Fuzz \cite{serebryany2017oss}.
+A {\em fuzzing campaign} is the process of running one or more fuzzers for a long period of time or even continuously like in OSS-Fuzz \cite{serebryany2017oss}.
 
-Security researchers tipically starts fuzzing using naive configurations and off-the-shelf fuzzers, then, meanwhile the campaign runs, observe the evolution and tune the fuzzers.
+Security researchers typically start fuzzing using naive configurations and off-the-shelf fuzzers, then, meanwhile, the campaign runs, observe the evolution and tune the fuzzers.
 
-Our proposed approach aims to insert in the observation-tuning feedback loop a visual component to hekp the researcher in better understand insights about the fuzzers testing a particular target.
+Our proposed approach aims to insert in the observation-tuning feedback loop a visual component to help the researcher better understand insights about the fuzzers testing a particular target.
 
 The data processed by {\em FuzzSplore} comes from the execution of the corpus of testcases that each fuzzer saved so far. The execution is instrumented and various properties are observed.
 
-Then we visualize these collected properties and the user can relate them to better understand what is going. After that, the user can choose to drop some fuzzers if less effective and assign more resources (tipically CPUs) to the most effective fuzzers or tune each individual fuzzer.
+Then we visualize these collected properties and the user can relate them to better understand what is going. After that, the user can choose to drop some fuzzers if less effective and assign more resources (typically CPUs) to the most effective fuzzers or tune each individual fuzzer.
 
-The fuzzing campaing can then continue. When it saturates, the analyst can collect insights using our tool and restart the visual analytics feedback-loop.
+The fuzzing campaign can then continue. When it saturates, the analyst can collect insights using our tool and restart the visual analytics feedback-loop.
 
 Saturation of fuzzers, when no more additional state is explored or the number of states explodes, is a problem that was rarely addressed in academic literature but that affects each type of Feedback-driven Fuzzer \cite{saturation},  and a tool that can guide towards the selection of techniques that avoid saturation can help a lot the campaign.
 
@@ -154,17 +154,17 @@ Saturation of fuzzers, when no more additional state is explored or the number o
 
 % We developed a script to extract the data from the execution of the various instrumented programs used by each fuzzer.
 
-We denote each fuzzer $F_i$ where $i$ is the index that identify it. 
-With $PUT_i$ we denote the version of the PUT preprocessed and istrumented in order to be used by $F_i$.
+We denote each fuzzer $F_i$ where $i$ is the index that identifies it. 
+With $PUT_i$ we denote the version of the PUT preprocessed and instrumented in order to be used by $F_i$.
 $PUT_e$ is the version of the PUT that logs the edge coverage using the hitcounts vector. It has to be provided independently if it is used or not by some fuzzer $F_i$.
 With $T_i(t)$ we denote the set of the saved testcases, the queue, by $F_i$ until time $t$ (seconds).
 
-Given $t$ as the time chosen by the user to observe the progrss of the fuzzers, the Algorithm \ref{alg:data} computes the following sets:
+Given $t$ as the time chosen by the user to observe the progress of the fuzzers, the Algorithm \ref{alg:data} computes the following sets:
 
 \begin{itemize}
 \item the set $C$ of all the functions $C_i \colon Time \longrightarrow NumEdges$ that relates, for the fuzzer $F_i$, a time unit to the number of discovered edges so far;
 \item the set $I$ of all the functions $I_i \colon Testcase \longrightarrow \{F_j, ...\}$ that associates, for the fuzzer $F_i$, each testcase in $T_i(t)$ to the set of fuzzers that consider the testcase as interesting;
-\item the set $X$ of the sets $X_i$, that maintains, for each fuzzer, the hitcounts vectors assciated with the execution of each testcase in $T_i(t)$;
+\item the set $X$ of the sets $X_i$, that maintains, for each fuzzer, the hitcounts vectors associated with the execution of each testcase in $T_i(t)$;
 \end{itemize}
 
 \begin{algorithm}[h]
@@ -206,27 +206,27 @@ Given $t$ as the time chosen by the user to observe the progrss of the fuzzers, 
 
 The next item that has to be retrieved, in addition to $C$, $I$ and $X$, is the set $G$ of all the graphs $G_i$ that describes the evolution of each $T_i(t)$, the levels graph introduced in Sec. \ref{sec:back}.
 
-We asume that each fuzzer encode the information about the parent testcases into the metadata of each testcase. In this way, it is trivial to construct the graph just reading all the metadata in $T_i(t)$.
+We assume that each fuzzer encodes the information about the parent testcases into the metadata of each testcase. In this way, it is trivial to construct the graph just by reading all the metadata in $T_i(t)$.
 
 \subsection{Visualization}
 
-We visualize the computed data $C$, $I$, $X$, $G$ and some other properties that can be directly collected in four different views.
+We visualize the computed data $C$, $I$, $X$, $G$, and some other properties that can be directly collected in four different views.
 
 You can see these views with some example data in the screenshot of our implementation, in Figure \ref{fig:full}.
 
-A timebar is used to select $t' \in [0, t]$ to ignore data ouside the selected time range and, for instance, visualize the data related to the queue $T_I(t')$ without the need to run again Algorithm \ref{alg:data}.
+A time bar is used to select $t' \in [0, t]$ to ignore data outside the selected time range and, for instance, visualize the data related to the queue $T_I(t')$ without the need to run again Algorithm \ref{alg:data}.
 
 \subsubsection{Testcases Scatterplot}
 
 Each $X_i$ is a matric of $|T_i(t)|$ rows in which each row is a vector of 65536 entries.
 
-There raw numbers are raw to visualize. To handle this problem, we reduce the dimensionality of each vector $X_{i,j}$ from 65536 to 2, in order to be easily visualized in a scatterplot.
+These raw numbers are raw to visualize. To handle this problem, we reduce the dimensionality of each vector $X_{i,j}$ from 65536 to 2, in order to be easily visualized in a scatterplot.
 
-To do that, we chosen an algorithm that optimize the conservation of local distances after the dimensionality reduction, {\em t-SNE} \cite{maaten2008visualizing}. The nature of this algorithm is randomic, it needs to process $X$ entirely in order to get new vectors that are meaningfully comparable.
+To do that, we chosen an algorithm that optimizes the conservation of local distances after the dimensionality reduction, {\em t-SNE} \cite{maaten2008visualizing}. The nature of this algorithm is random, it needs to process $X$ entirely in order to get new vectors that are meaningfully comparable.
 
 We experimentally observed on a test dataset that a perplexity of 30 is good enough.
 
-The user can select groups of nodes interactively to highlight properties in the other visualiztions.
+The user can select groups of nodes interactively to highlight properties in the other visualizations.
 
 \subsubsection{Coverage Growth Plot}
 
@@ -236,16 +236,16 @@ When a testcase is selected in the scatterplot or in the generations graph a ver
 
 \subsubsection{Interesting Testcases Plot}
 
-Ths plot is used to visualize the evolution of the fuzzing algorithm in finding new testcases. The X axis represent time in seconds, the Y axis the number of new interesting testcases saved by the fuzzer in that second.
+This plot is used to visualize the evolution of the fuzzing algorithm in finding new testcases. The X axis represents time in seconds, the Y axis the number of new interesting testcases saved by the fuzzer in that second.
 This information is directly contained in $T_i(t)$.
 
 Here too, when a testcase is selected in the scatterplot or in the generations graph a vertical line appears at position $x$ where $x$ is the time in which the testcase was discovered.
 
 \subsubsection{Generations Graph}
 
-We visualize each Generations Graph $G_i$ combined with $I$. Given a fuzzer $F_j$ from the user, we highlight in graph $G_i$ each node associated with each testcase $T$ if $F_j \in I_i(T)$. In this way, the user can know if the evolution of $T_i(t)$ associated to the fuzzer $F_i$ is compatible with the selected $F_j$.
+We visualize each Generations Graph $G_i$ combined with $I$. Given a fuzzer $F_j$ from the user, we highlight in graph $G_i$ each node associated with each testcase $T$ if $F_j \in I_i(T)$. In this way, the user can know if the evolution of $T_i(t)$ associated with the fuzzer $F_i$ is compatible with the selected $F_j$.
 
-When a testcase is selected in the scatterplot, the border of the corresponding node in the graph is highlighted. The user can select additinal nodes or deselect nodes selected from the scatterplot. The scatterplot selection is sychinized in both ways witht the graph.
+When a testcase is selected in the scatterplot, the border of the corresponding node in the graph is highlighted. The user can select additional nodes or deselect nodes selected from the scatterplot. The scatterplot selection is synchronized in both ways with the graph.
 
 \subsection{Analyst Feedback}
 
@@ -253,13 +253,13 @@ The insights that an analyst can retrieve in order to choose or tune the fuzzers
 
 \begin{itemize}
 \item Looking just at the scatterplot, the user can select a subset of fuzzers that explore different program points if the points related to each fuzzer in the graphs are clustered;
-\item Looking at the scatterplot and the coverage graph, the user can select a cluster of testcases that are similar and see the ability of a fuzzer in generating similar testcases in a small range of time. A fuzzer that discovers few points at time and have them distributed for all the X axis of the coverage plot should be deprioritized;
-\item Looking at the coverage graph, when there is a huge increment of the number of edges, the user can see if an outlier in the scatterplot was generated. This allow to isolate interesting testcases that improves a lot the coverage;
+\item Looking at the scatterplot and the coverage graph, the user can select a cluster of testcases that are similar and see the ability of a fuzzer in generating similar testcases in a small range of time. A fuzzer that discovers few points at a time and have them distributed for all the X axis of the coverage plot should be deprioritized;
+\item Looking at the coverage graph, when there is a huge increment of the number of edges, the user can see if an outlier in the scatterplot was generated. This allows to isolate interesting testcases that improves a lot the coverage;
 \item Selecting testcases in the graph, the user can see if the testcases are similar in the scatterplot in order to understand the ability of the mutator to generate similar or different derived inputs;
-\item Selecting testcases in the graph and a fuzzer to cross compare, the user can know if the coverage metric of the other fuzzer is sensitive enougth to cover the selected testcases.
+\item Selecting testcases in the graph and a fuzzer to cross-compare, the user can know if the coverage metric of the other fuzzer is sensitive enough to cover the selected testcases.
 \end{itemize}
 
-With this information the security researcher should be able to choose and tune the set of fuzzers to avoid the saturation of the fuzzing campaign. This methodology is a first step towards a fuzzers debugger that is highly demanded by the security reseach community.
+With this information, the security researcher should be able to choose and tune the set of fuzzers to avoid the saturation of the fuzzing campaign. This methodology is a first step towards a fuzzers debugger that is highly demanded by the security research community.
 
 %\subsection{Choosing and Tuning Fuzzers}
 
@@ -299,8 +299,8 @@ We also implemented a pan and zoom functionality that keeps the lowest value pin
 
 \subsection{Generation Graph}
 The Generation Graph (Fig. \ref{fig:tree})  is created as a hierarchical layout where each data point's value is displayed as a node label.\par
-The user can zoom as well as pan over the entire view to have a better understanding of the data and when a node is selected the other a routine is called to highlights the corresponding points in the scatterplot and insert lines in the other plots.
-A mouseover on a node lowlights all the nodes except the hovered nodes and its neighbours nodes and edges.
+The user can zoom as well as pan over the entire view to have a better understanding of the data and when a node is selected in the other a routine is called to highlights the corresponding points in the scatterplot and insert lines in the other plots.
+A mouseover on node lowlights all the nodes except the hovered nodes and their neighbor nodes and edges.
 
 \begin{figure}[H]
   \includegraphics[scale=0.25]{img/tree}
@@ -321,11 +321,11 @@ The user can filter the data shown an all the 4 views by time, with a range slid
 
 \section{Concluding Remarks}
 
-{\sc FuzzSplore} brings an useful visualization-based method to retrieve insights from running fuzzers in a campaign. 
+{\sc FuzzSplore} brings a useful visualization-based method to retrieve insights from running fuzzers in a campaign. 
 
 It defines a long-term visual analytics feedback loop applied to fuzzing with a set of data retrieval and visualization techniques that can be easily extended in future works. 
 
-The information that a security researcher can collect using our approach can help in uderstanding the problem of saturation in fuzzing campaigns, a widely spread problem that is rarely addressed in academic literature.
+The information that a security researcher can collect using our approach can help in understanding the problem of saturation in fuzzing campaigns, a widely spread problem that is rarely addressed in academic literature.
 
 We share {\sc FuzzSplore} as Free and Open Source Software at \url{https://github.com/andreafioraldi/FuzzSplore}.
 
